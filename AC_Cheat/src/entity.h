@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 
-
+class myMath;
 class entity
 {
 
@@ -19,7 +19,8 @@ public:
 	int entHealth; //0x00EC
 	char pad_00F0[273]; //0x00F0
 	char entName[16] = ""; //0x0204
-
+	int screenX;
+	int screenY;
 	void print(entity ent) const {
 		std::cout << "Name: " << ent.entName << std::endl;
 		std::cout << std::dec<<   "Health: " << ent.entHealth << std::endl;
@@ -56,6 +57,7 @@ public:
 			ReadProcessMemory(handle, (LPCVOID)(pointer), &ent, sizeof(ent), NULL);
 			ent.print(ent);
 		}
+
 
 
 
