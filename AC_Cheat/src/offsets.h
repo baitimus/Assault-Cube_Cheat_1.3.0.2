@@ -8,7 +8,7 @@ class Offsets {
     DWORD fov = 0x18A7CC;
     DWORD playerCount = 0x18AC0C;
     DWORD base_address = 0;
-    DWORD viewMatrix = 0x17AFE0;// 0x0057DFD0 0x17E010 0x17DFFC 0x17AFE0
+    DWORD viewMatrix = 0x17AFE0 ;// 0x0057DFD0 0x17E010 0x17DFFC 0x17AFE0 
     DWORD width = 0x191ED8;
     DWORD hight = width + 0x4;
     DWORD numberOfPlayers = 0x18AC04;

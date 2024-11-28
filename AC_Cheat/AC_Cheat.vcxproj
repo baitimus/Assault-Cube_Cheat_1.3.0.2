@@ -132,7 +132,7 @@
   <ItemGroup>
     <ClInclude Include="src\draw.h" />
     <ClInclude Include="src\entity.h" />
-    <ClInclude Include="src\myMath.h" />
+    <ClInclude Include="src\math.h" />
     <ClInclude Include="src\offsets.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\winapi.h" />

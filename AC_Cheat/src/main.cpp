@@ -3,66 +3,56 @@
 #include "winapi.h"
 #include "offsets.h"
 #include "entity.h"
-#include "myMath.h"
+#include "math.h"
 #include "draw.h"
 
 
 DWORD pID = NULL;
 HANDLE pHandle = NULL;
 DWORD baseAddr = NULL;
-float viewMatrix[15];
-myMath mymath;
+float viewMatrix[16];
+myMath math;
 
-myMath::Vec2 screen;
+
+
 //classes and structs
 runTimeInfo run;
 entity ent;
-Offsets off;
+Offsets offsets;
 
 int main()
 {
-	run.setup(pHandle, run.baseAddr);
-	ent.readEntityList(pHandle, run, ent);
-	
-	int width;
-	int height;
-	ReadProcessMemory(pHandle, (LPCVOID)(run.baseAddr + 0x191ED8), &width, sizeof(width), NULL);
-	std::cout << "Width = " << width << std::endl;
-	ReadProcessMemory(pHandle, (LPCVOID)(run.baseAddr + 0x191ED8 + 0x4), &height, sizeof(height), NULL);
-	std::cout << "Height = " << height << std::endl;
+    run.setup(pHandle, run.baseAddr);
 
-	ReadProcessMemory(pHandle, (LPCVOID)(run.baseAddr + off.viewMatrix), &viewMatrix, sizeof(viewMatrix), NULL);
-	for (int i = 0; i <= 15; ++i) {
-		std::cout << "viewMatrix[" << i << "] = " << viewMatrix[i] << std::endl;
-	}
-	screen.x = width;
-	screen.y = height;
+   
 
-	mymath.worldToScreen(viewMatrix, ent, screen);
-	while (true) {
-		std::cout << "Screen X: " << ent.screenX << std::endl;
-		std::cout << "Screen Y: " << ent.screenY << std::endl;
+    ReadProcessMemory(pHandle, (LPCVOID)(run.baseAddr + offsets.width), &run.windowWidth, sizeof(run.windowWidth), NULL);
 
-		drawDotOnScreen(screen.x, screen.y);
-	}
-	
+    ReadProcessMemory(pHandle, (LPCVOID)(run.baseAddr + offsets.hight), &run.windowHeight, sizeof(run.windowHeight), NULL);
+
+    std::cout << "Width: " << run.windowWidth << std::endl;
+    std::cout << "Height: " << run.windowHeight << std::endl;
+
+    //get viewmatrix and display viewmatrix
 
 
+    
+
+	myMath::Vec2 screen;
+    while (true)
+    {
+        ent.readEntityList(pHandle, run, ent);
+        ReadProcessMemory(pHandle, (LPCVOID)(0x0057DFD0), &viewMatrix, sizeof(viewMatrix), NULL);
+    
+    if (math.WorldToScreen(ent,&screen, viewMatrix, run.windowWidth, run.windowHeight))
+    {
+
+		std::cout << "WorldToScreen worked" << std::endl;
 
 
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
-		CloseHandle(pHandle);
-		return 0;
-	
-
-};
+    CloseHandle(pHandle);
+    return 0;
+}
