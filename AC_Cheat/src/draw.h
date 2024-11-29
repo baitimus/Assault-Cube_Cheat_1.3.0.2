@@ -37,6 +37,8 @@ struct draw {
         DWORD addressEntList;
         if (!ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pInfo.baseAddr + offsets.entList), &addressEntList, sizeof(addressEntList), NULL)) {
             std::cout << "entloop error 001  " << std::endl;
+
+
         }
 
         int p = 0;
@@ -46,17 +48,19 @@ struct draw {
 
         for (int i = 4; i < p * 4; i += 0x4) {
             DWORD pointer;
-            std::cout << "Address: " << addressEntList + i << std::endl;
+            
             ReadProcessMemory(pInfo.pHandle, (LPCVOID)(addressEntList + i), &pointer, sizeof(pointer), NULL);
 
-            std::cout << "Pointer: " << pointer << std::endl;
+           
             ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pointer), &ent, sizeof(ent), NULL);
-            //ent.print(ent);
-
-            ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
+            system("cls");
+            ent.print(ent);
+            //CLEAR CONSOLE
+		
+            ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix + pInfo.baseAddr ), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
 			math.WorldToScreen(ent, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight);
-			drawDotOnScreen(screen.x, screen.y);
-			Sleep(16);
+			drawDotOnScreen(screen.x, screen.y);    
+			
         }
 
 
@@ -64,6 +68,7 @@ struct draw {
     }
 
 
+   
 
 
 

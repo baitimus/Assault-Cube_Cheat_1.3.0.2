@@ -24,17 +24,18 @@ int main()
 
 
 
+  
     while (true)
     {
-		Draw.drawEsp(ent, pInfo);
-
-
+        Draw.drawEsp(ent, pInfo);
     }
 
     
 
 
- 
+
+
+
 
 
 

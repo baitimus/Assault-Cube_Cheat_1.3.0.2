@@ -44,8 +44,7 @@ public:
 		screen->y = -(static_cast<float>(windowHeight) / 2 * NDC.y) + (NDC.y + static_cast<float>(windowHeight) / 2);
 
 
-		std::cout << "Screen X: " << screen->x << std::endl;
-		std::cout << "Screen Y: " << screen->y << std::endl;
+	
 		
 		return true;
 	}
