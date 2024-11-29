@@ -1,6 +1,6 @@
 #pragma once
 class entity;
-#include "draw.h"
+
 
 
 class myMath {
@@ -25,7 +25,7 @@ public:
 
 	bool WorldToScreen(entity ent,myMath::Vec2* screen,float matrix[16], int windowWidth, int windowHeight)
 	{
-		draw draw;
+		
 		Vec4 clipCoords;
 		clipCoords.x = ent.headX * matrix[0] + ent.headY * matrix[4] + ent.headZ * matrix[8] + matrix[12];
 		clipCoords.y = ent.headX * matrix[1] + ent.headY * matrix[5] + ent.headZ * matrix[9] + matrix[13];
