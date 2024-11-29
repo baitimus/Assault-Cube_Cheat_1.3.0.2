@@ -2,12 +2,58 @@
 #include "pch.h"
 #include <TlHelp32.h>
 #include <iostream>
-
+#include "offsets.h"
+struct Offsets;
+struct runTimeInfo;
+struct entity;
 struct runTimeInfo
 {
-    DWORD baseAddr;
-    int windowWidth = 0;
-	int windowHeight = 0;
+    
+
+    struct pInfo {
+		std::uintptr_t baseAddr;
+		int windowWidth;
+		int windowHeight;
+		HANDLE pHandle;
+        DWORD pID;
+
+    
+    
+    };
+
+    void setup(HANDLE& pHandle,runTimeInfo::pInfo& info )
+    {
+		Offsets offsets;
+        runTimeInfo run;
+        DWORD pID = NULL;
+        HWND hgamewindow = FindWindow(NULL, L"AssaultCube");
+        if (hgamewindow == NULL) {
+            std::cout << "Failed to find window!" << std::endl;
+            return;
+        }
+        GetWindowThreadProcessId(hgamewindow, &pID);
+        pHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pID);
+
+        if (pHandle == INVALID_HANDLE_VALUE || pHandle == NULL) { // error handling
+            std::cout << "Failed to open process" << std::endl;
+        }
+        else {
+            std::cout << "Process opened successfully" << std::endl;
+        }
+
+        info.baseAddr = run.getModuleBaseAddress(L"ac_client.exe", pID);
+        std::cout << std::hex << "Base address: " << info.baseAddr << std::endl;
+
+        SIZE_T bytesRead;
+	
+		std::cout << std::hex << info.baseAddr + offsets.width << std::endl;
+        ReadProcessMemory(pHandle, (LPCVOID)(info.baseAddr + offsets.width), &info.windowWidth, sizeof(info.windowWidth), &bytesRead);
+		SIZE_T bytesRead2;
+		ReadProcessMemory(pHandle, (LPCVOID)(info.baseAddr + offsets.hight), &info.windowHeight, sizeof(info.windowHeight), &bytesRead2);
+	
+    
+		return;
+    }
 
 
     // Member function to get module base address
@@ -31,28 +77,7 @@ struct runTimeInfo
         return dwModuleBaseAddress;
     }
     // & allow references makes it so value changes outside of function
-    void setup(HANDLE& pHandle, DWORD& baseAddress)
-    {
-        runTimeInfo run;
-        DWORD pID = NULL;
-        HWND hgamewindow = FindWindow(NULL, L"AssaultCube");
-        if (hgamewindow == NULL) {
-            std::cout << "Failed to find window!" << std::endl;
-            return;
-        }
-        GetWindowThreadProcessId(hgamewindow, &pID);
-        pHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pID);
-
-        if (pHandle == INVALID_HANDLE_VALUE || pHandle == NULL) { // error handling
-            std::cout << "Failed to open process" << std::endl;
-        }
-        else {
-            std::cout << "Process opened successfully" << std::endl;
-        }
-
-        baseAddress = run.getModuleBaseAddress(L"ac_client.exe", pID);
-        std::cout << std::hex << "Base address: " << baseAddress << std::endl;
-    }
+    
 
 };
 

@@ -7,13 +7,11 @@
 #include "draw.h"
 
 
-DWORD pID = NULL;
-HANDLE pHandle = NULL;
-DWORD baseAddr = NULL;
-float viewMatrix[16];
+
+
 myMath math;
-
-
+runTimeInfo::pInfo pInfo;
+draw Draw;
 
 //classes and structs
 runTimeInfo run;
@@ -22,37 +20,53 @@ Offsets offsets;
 
 int main()
 {
-    run.setup(pHandle, run.baseAddr);
+	run.setup(pInfo.pHandle,pInfo);
+    while (true) {
+        DWORD addressEntList;
+        if (!ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pInfo.baseAddr + offsets.entList), &addressEntList, sizeof(addressEntList), NULL)) {
+            std::cout << "entloop error 001  " << std::endl;
+        }
 
-   
+        //getting players in game 
+        int p = 0;
+        if (!ReadProcessMemory(pInfo.pHandle, (LPCVOID)(0x58AC0C), &p, sizeof(p), NULL)) {
+            std::cout << "entloop error 002  " << std::endl;
+        }
+        //looping trough each entity pointer and reading entity for each pointer 
+        for (int i = 4; i < p * 4; i += 0x4) {
+            DWORD pointer;
+            std::cout << "Address: " << addressEntList + i << std::endl;
+            ReadProcessMemory(pInfo.pHandle, (LPCVOID)(addressEntList + i), &pointer, sizeof(pointer), NULL);
+            std::cout << "Pointer: " << pointer << std::endl;
+            ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pointer), &ent, sizeof(ent), NULL);
+            //ent.print(ent);
 
-    ReadProcessMemory(pHandle, (LPCVOID)(run.baseAddr + offsets.width), &run.windowWidth, sizeof(run.windowWidth), NULL);
+            ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
+            myMath::Vec2 screen = {};
+            myMath math;
+            math.WorldToScreen(ent, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight);
 
-    ReadProcessMemory(pHandle, (LPCVOID)(run.baseAddr + offsets.hight), &run.windowHeight, sizeof(run.windowHeight), NULL);
-
-    std::cout << "Width: " << run.windowWidth << std::endl;
-    std::cout << "Height: " << run.windowHeight << std::endl;
-
-    //get viewmatrix and display viewmatrix
+            Draw.drawDotOnScreen(screen.x, screen.y);
+        }
 
 
-    
 
-	myMath::Vec2 screen;
-    while (true)
-    {
-        ent.readEntityList(pHandle, run, ent);
-        ReadProcessMemory(pHandle, (LPCVOID)(0x0057DFD0), &viewMatrix, sizeof(viewMatrix), NULL);
-    
-    if (math.WorldToScreen(ent,&screen, viewMatrix, run.windowWidth, run.windowHeight))
-    {
-
-		std::cout << "WorldToScreen worked" << std::endl;
 
 
     }
-}
 
-    CloseHandle(pHandle);
+
+ 
+
+
+
+
+
+
+	myMath::Vec2 screen = {};
+
+
+    CloseHandle(pInfo.pHandle);
     return 0;
+
 }

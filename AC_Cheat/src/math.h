@@ -25,6 +25,7 @@ public:
 
 	bool WorldToScreen(entity ent,myMath::Vec2* screen,float matrix[16], int windowWidth, int windowHeight)
 	{
+		draw draw;
 		Vec4 clipCoords;
 		clipCoords.x = ent.headX * matrix[0] + ent.headY * matrix[4] + ent.headZ * matrix[8] + matrix[12];
 		clipCoords.y = ent.headX * matrix[1] + ent.headY * matrix[5] + ent.headZ * matrix[9] + matrix[13];
@@ -39,12 +40,13 @@ public:
 		NDC.y = clipCoords.y / clipCoords.w;
 		NDC.z = clipCoords.z / clipCoords.w;
 
-		screen->x = (windowWidth / 2 * NDC.x) + (NDC.x + windowWidth / 2);
-		screen->y = -(windowHeight / 2 * NDC.y) + (NDC.y + windowHeight / 2);
+		screen->x = (static_cast<float>(windowWidth) / 2 * NDC.x) + (NDC.x + static_cast<float>(windowWidth) / 2);
+		screen->y = -(static_cast<float>(windowHeight) / 2 * NDC.y) + (NDC.y + static_cast<float>(windowHeight) / 2);
+
 
 		std::cout << "Screen X: " << screen->x << std::endl;
 		std::cout << "Screen Y: " << screen->y << std::endl;
-		drawDotOnScreen(screen->x, screen->y);
+		
 		return true;
 	}
 
