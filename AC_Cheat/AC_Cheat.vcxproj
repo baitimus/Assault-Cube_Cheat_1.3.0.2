@@ -130,6 +130,7 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\aimbot.h" />
     <ClInclude Include="src\draw.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\math.h" />

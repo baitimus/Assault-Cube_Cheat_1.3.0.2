@@ -38,5 +38,8 @@
     <ClInclude Include="src\draw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\aimbot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

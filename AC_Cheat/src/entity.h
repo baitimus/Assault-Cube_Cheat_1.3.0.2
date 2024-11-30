@@ -2,6 +2,7 @@
 #include "pch.h"
 
 class myMath;
+
 class entity
 {
 
@@ -19,30 +20,37 @@ public:
 	float feetX; //0x0028
 	float feetY; //0x002C
 	float feetZ; //0x0030
-	char pad_0034[184]; //0x0034
-	int entHealth; //0x00EC
+	float viewX; //0x0034
+	float viewY; //0x0038
+	char pad_003C[176]; //0x003C
+	int32_t entHealth; //0x00EC
 	char pad_00F0[236]; //0x00F0
-	
 	int32_t kills; //0x01DC
-	int32_t deaths; //0x01D8
-	char pad_01E0[28]; //0x01E0
+	char pad_01E0[4]; //0x01E0
+	int32_t deaths; //0x01E4
+	char pad_01E8[28]; //0x01E8
 	char name[16]; //0x0204
-	char pad_0208[248]; //0x0208
+	char pad_0214[248]; //0x0214
 	int32_t teamId; //0x030C
+	
+
 	//not part of entity struct of the enemys
 	float screenX;
 	float screenY;
 	float viewMatrix[16];
 
 	void print(const entity& ent) const {
-		std::cout << std::dec <<"Name: " << ent.name << std::endl; // Corrected to use `name`
-		std::cout << "Health: " << ent.entHealth << std::endl;
+		
+		std::cout << "Name: " << ent.name << std::endl;
+		std::cout << std::dec <<  "Health: " << ent.entHealth << std::endl;
 		std::cout << "Head X: " << ent.headX << std::endl;
 		std::cout << "Head Y: " << ent.headY << std::endl;
 		std::cout << "Head Z: " << ent.headZ << std::endl;
 		std::cout << "Feet X: " << ent.feetX << std::endl;
 		std::cout << "Feet Y: " << ent.feetY << std::endl;
 		std::cout << "Feet Z: " << ent.feetZ << std::endl;
+		std::cout << "View X: " << ent.viewX << std::endl;
+		std::cout << "View Y: " << ent.viewY << std::endl;
 		std::cout << "Kills: " << ent.kills << std::endl; // Added kills field
 		std::cout << "Deaths: " << ent.deaths << std::endl; // Added deaths field
 		std::cout << "Team ID: " << ent.teamId << std::endl; // Added teamId field
@@ -77,6 +85,16 @@ public:
 
 
 	}
+	void readLocalplayer(runTimeInfo::pInfo& ms, entity& localPlayer) {
+	
+		DWORD pointer;
+		Offsets offsets;
+		ReadProcessMemory(ms.pHandle, (LPCVOID)(ms.baseAddr + offsets.localPlayer), &pointer, sizeof(pointer), NULL);
+		ReadProcessMemory(ms.pHandle, (LPCVOID)(pointer), &localPlayer, sizeof(localPlayer), NULL);
+		std::cout << "Local player: " << std::endl;
+		localPlayer.print(localPlayer);
+	};
+
 };
 
 

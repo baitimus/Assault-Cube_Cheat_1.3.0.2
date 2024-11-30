@@ -20,7 +20,11 @@ public:
 		float x, y, z, w;
 	};
 
-	
+	struct  ViewAngels
+	{
+		float pitch;
+		float yaw;
+	};
 	
 
 	bool WorldToScreen(entity ent,myMath::Vec2* screen,float matrix[16], int windowWidth, int windowHeight)

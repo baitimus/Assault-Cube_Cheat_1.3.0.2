@@ -5,30 +5,39 @@
 #include "entity.h"
 #include "math.h"
 #include "draw.h"
-
+#include "aimbot.h"
 
 
 
 myMath math;
 runTimeInfo::pInfo pInfo;
 draw Draw;
-
+aim aimbot;
 //classes and structs
 runTimeInfo run;
 entity ent;
+entity localPlayer;
 Offsets offsets;
 
 int main()
 {
     run.setup(pInfo.pHandle, pInfo);
 
-
-
-  
     while (true)
     {
-        Draw.drawEsp(ent, pInfo);
+        ent.readLocalplayer(pInfo, localPlayer);
+		Draw.drawEsp(ent, pInfo);
+		//if right mus button is pressed
+		if (GetAsyncKeyState(VK_RBUTTON))
+		{
+            aimbot.aimbot(localPlayer, ent, pInfo);
+		}
+        Sleep(1);
     }
+    
+    
+       
+    
 
     
 

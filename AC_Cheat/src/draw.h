@@ -52,8 +52,9 @@ struct draw {
             ReadProcessMemory(pInfo.pHandle, (LPCVOID)(addressEntList + i), &pointer, sizeof(pointer), NULL);
 
            
+           
             ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pointer), &ent, sizeof(ent), NULL);
-            system("cls");
+                
             ent.print(ent);
             //CLEAR CONSOLE
 		
