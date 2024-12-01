@@ -41,14 +41,12 @@ class aim {
 				float viewX = atan2(deltaY, deltaX) * 180 / 3.14159265 + 90;
 
 
-				float deltaZ = (ent.headZ + 0.24) - localPlayer.headZ;
+				float deltaZ = (ent.headZ) - localPlayer.headZ;
 
 				double distance = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 
 				float viewY = atan2(deltaZ, distance) * 180 / 3.14159265;
-				std::cout << "viewX: " << viewX << std::endl;
-				std::cout << "viewY: " << viewY << std::endl;
-				std::cout << "--------------------------------" << std::endl;
+				
 				DWORD localPlayeraddress;
 				ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pInfo.baseAddr + offsets.localPlayer ), &localPlayeraddress, sizeof(localPlayeraddress), NULL);
 				
@@ -74,17 +72,3 @@ class aim {
 
 };
 
-/*float deltaX = Enemy.headX - localPlayer.headX;
-			float deltaY = Enemy.headY - localPlayer.headY;
-
-			float viewX = atan2(deltaY, deltaX) * 180 / 3.14159265 + 90;
-
-
-			float deltaZ = Enemy.headZ - localPlayer.headZ;
-
-			double distance = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-
-			float viewY = atan2(deltaZ,distance) * 180 / 3.14159265;
-			float test;
-			ReadProcessMemory(pInfo.pHandle, (LPCVOID)(0x007AF080 + 0x0034), &test, sizeof(test), NULL);
-			std::cout << "test: " << test << std::endl;	*/

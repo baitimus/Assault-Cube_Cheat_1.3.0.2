@@ -91,8 +91,8 @@ public:
 		Offsets offsets;
 		ReadProcessMemory(ms.pHandle, (LPCVOID)(ms.baseAddr + offsets.localPlayer), &pointer, sizeof(pointer), NULL);
 		ReadProcessMemory(ms.pHandle, (LPCVOID)(pointer), &localPlayer, sizeof(localPlayer), NULL);
-		std::cout << "Local player: " << std::endl;
-		localPlayer.print(localPlayer);
+		
+		
 	};
 
 };

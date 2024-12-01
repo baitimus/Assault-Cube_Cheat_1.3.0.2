@@ -9,7 +9,7 @@
 
 
 
-myMath math;
+
 runTimeInfo::pInfo pInfo;
 draw Draw;
 aim aimbot;
@@ -17,11 +17,14 @@ aim aimbot;
 runTimeInfo run;
 entity ent;
 entity localPlayer;
-Offsets offsets;
+
 
 int main()
 {
     run.setup(pInfo.pHandle, pInfo);
+
+    ent.readLocalplayer(pInfo, localPlayer);
+	ent.print(localPlayer);
 
     while (true)
     {

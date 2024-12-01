@@ -55,7 +55,7 @@ struct draw {
            
             ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pointer), &ent, sizeof(ent), NULL);
                 
-            ent.print(ent);
+        
             //CLEAR CONSOLE
 		
             ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix + pInfo.baseAddr ), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
