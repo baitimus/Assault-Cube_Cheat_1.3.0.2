@@ -37,8 +37,12 @@ struct draw {
         ent.readLocalplayer(pInfo, localPlayer);
 
         for (auto& entity : entities) {
+            if (entity.entHealth <= 0) {
+                continue;
+            }
             Sleep(1);
             ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix + pInfo.baseAddr), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
+
             if (math.WorldToScreen(entity, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight)) {
                 if (entity.teamId == localPlayer.teamId) {
                     drawDotOnScreen(screen.x, screen.y, RGB(0, 255, 0));  // Green for same team
