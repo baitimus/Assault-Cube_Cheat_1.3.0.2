@@ -7,3 +7,6 @@
 #include <tchar.h>
 #include <TlHelp32.h>
 #include <algorithm>
+#include <dwmapi.h>
+#include <d3d11.h>
+#include <windowsx.h>

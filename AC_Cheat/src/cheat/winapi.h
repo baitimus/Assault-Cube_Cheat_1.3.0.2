@@ -27,7 +27,7 @@ struct runTimeInfo
 		Offsets offsets;
         runTimeInfo run;
         DWORD pID = NULL;
-        HWND hgamewindow = FindWindow(NULL, L"AssaultCube");
+        HWND hgamewindow = FindWindow(NULL, _T("AssaultCube"));
         if (hgamewindow == NULL) {
             std::cout << "Failed to find window!" << std::endl;
             return;
@@ -67,7 +67,7 @@ struct runTimeInfo
         if (Module32First(hSnapshot, &ModuleEntry32)) // store first Module in ModuleEntry32
         {
             do {
-                if (_tcscmp(ModuleEntry32.szModule, lpszModuleName) == 0) // if Found Module matches Module we look for -> done!
+                if (strcmp((const char*)ModuleEntry32.szModule, "ac_client.exe") == 0) // if Found Module matches Module we look for -> done!
                 {
                     dwModuleBaseAddress = (DWORD)ModuleEntry32.modBaseAddr;
                     break;

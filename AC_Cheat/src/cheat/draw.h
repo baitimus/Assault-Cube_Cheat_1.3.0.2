@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "math.h"
+
 class entity;
 
 
@@ -57,11 +58,8 @@ struct draw {
 
         return;
     }
-
-
+	
    
-
-
 
 
 
