@@ -11,7 +11,7 @@ class aim {
             Offsets offsets;
             entity ent;
 
-            // Read the list of entities
+            
             std::vector<entity> entities = ent.readEntityList(pInfo);
 
             float closestDistance = FLT_MAX; 
@@ -28,14 +28,14 @@ class aim {
 
                 double distance = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 
-                // Update the target if this entity is closer
+                
                 if (distance < closestDistance) {
                     closestDistance = distance;
                     target = &entity;
                 }
             }
 
-            // If we found a target, aim at it
+            
             if (target) {
                 float deltaX = target->headX - localPlayer.headX;
                 float deltaY = target->headY - localPlayer.headY;
@@ -48,14 +48,14 @@ class aim {
 
                 float viewY = atan2(deltaZ, distance) * 180.0f / 3.14159265f;
 
-                // Retrieve local player address
+                
                 DWORD localPlayerAddress;
                 if (!ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pInfo.baseAddr + offsets.localPlayer), &localPlayerAddress, sizeof(localPlayerAddress), NULL)) {
                     std::cerr << "Error reading local player address." << std::endl;
                     return;
                 }
 
-                // Write calculated view angles
+                
                 if (!WriteProcessMemory(pInfo.pHandle, (LPVOID)(localPlayerAddress + 0x0034), &viewX, sizeof(viewX), NULL)) {
                     std::cerr << "Error writing viewX." << std::endl;
                 }
