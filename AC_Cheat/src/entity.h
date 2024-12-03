@@ -59,9 +59,10 @@ public:
 	}
 
 
-	std::vector<entity> readEntityList(runTimeInfo::pInfo& ms, entity& ent) {
+	std::vector<entity> readEntityList(runTimeInfo::pInfo& ms) {
 		Offsets offsets; 
 		DWORD addressEntList;
+		entity ent;
 		std::vector<entity> entities;
 
 		if (!ReadProcessMemory(ms.pHandle, (LPCVOID)(ms.baseAddr + offsets.entList), &addressEntList, sizeof(addressEntList), NULL)) {

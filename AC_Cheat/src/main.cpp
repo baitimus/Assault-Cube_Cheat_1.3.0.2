@@ -25,12 +25,20 @@ int main()
     
     ent.readLocalplayer(pInfo, localPlayer);
     
-    std::vector<entity> entities;
+    std::vector<entity> entities = ent.readEntityList(pInfo);
     
-	entities = ent.readEntityList(pInfo, ent);
+	
     
-    for (const auto& entity : entities) {
-        entity.print(entity); 
+    while (true)
+    {
+        ent.readLocalplayer(pInfo, localPlayer);
+		Sleep(10);
+        if (GetAsyncKeyState(VK_RBUTTON))
+        {
+            
+            aimbot.aimbot(localPlayer, pInfo);
+        }
+
     }
     
     
