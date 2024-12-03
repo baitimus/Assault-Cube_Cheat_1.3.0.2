@@ -59,14 +59,27 @@ void drawEsp1(entity ent, runTimeInfo::pInfo pInfo, entity localPlayer) {
 			powf(localPlayer.headZ - entity.headZ, 2));
 
 		// Scale box size based on distance
-		float scaleFactor = 50.0f / (distance + 1.0f); // Avoid division by zero
-		int w = static_cast<int>(50 * scaleFactor); // Width scaled by distance
-		int h = static_cast<int>(100 * scaleFactor); // Height scaled by distance
+		float scaleFactor = 44.0f / (distance + 0.09f); // Avoid division by zero
+		int w = static_cast<int>(35 * scaleFactor); // Width scaled by distance
+		int h = static_cast<int>(75 * scaleFactor); // Height scaled by distance
 
 		// Transform entity position to screen coordinates
 		if (math.WorldToScreen(entity, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight)) {
 			// Adjust the box to align with the body
 			float headOffset = h * 0.09f; // Align box so that the body fills it
+
+			// Calculate health color
+			int red = static_cast<int>(255 * (100 - entity.entHealth) / 100.0f);
+			int green = static_cast<int>(255 * entity.entHealth / 100.0f);
+			ImU32 healthColor = IM_COL32(red, green, 0, 255);
+
+			// Display health text above the box
+			std::string healthText = std::to_string(entity.entHealth) + "HP";
+			ImGui::GetBackgroundDrawList()->AddText(
+				ImVec2(screen.x - ImGui::CalcTextSize(healthText.c_str()).x / 2, screen.y - headOffset - 15),
+				healthColor,
+				healthText.c_str()
+			);
 
 			// Draw ESP box
 			if (entity.teamId == localPlayer.teamId) {
@@ -76,7 +89,6 @@ void drawEsp1(entity ent, runTimeInfo::pInfo pInfo, entity localPlayer) {
 					ImVec2(screen.x + w / 2, screen.y + h - headOffset),
 					IM_COL32(0, 255, 0, 255)
 				);
-
 			}
 			else {
 				// Red for enemies
@@ -84,19 +96,6 @@ void drawEsp1(entity ent, runTimeInfo::pInfo pInfo, entity localPlayer) {
 					ImVec2(screen.x - w / 2, screen.y - headOffset),
 					ImVec2(screen.x + w / 2, screen.y + h - headOffset),
 					IM_COL32(255, 0, 0, 255)
-				);
-
-				// Calculate health color
-				int red = static_cast<int>(255 * (100 - entity.entHealth) / 100.0f);
-				int green = static_cast<int>(255 * entity.entHealth / 100.0f);
-				ImU32 healthColor = IM_COL32(red, green, 0, 255);
-
-				// Draw health text above the box
-				std::string healthText = std::to_string(entity.entHealth) + "HP";
-				ImGui::GetBackgroundDrawList()->AddText(
-					ImVec2(screen.x - ImGui::CalcTextSize(healthText.c_str()).x / 2, screen.y - headOffset - 15),
-					healthColor,
-					healthText.c_str()
 				);
 			}
 		}
@@ -180,7 +179,7 @@ INT APIENTRY  WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 
 
 	DXGI_SWAP_CHAIN_DESC scd = {};
-	scd.BufferDesc.RefreshRate.Numerator = 60; // fps
+	scd.BufferDesc.RefreshRate.Numerator = 144; // fps
 	scd.BufferDesc.RefreshRate.Denominator = 1U;
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	scd.SampleDesc.Count = 1U;
