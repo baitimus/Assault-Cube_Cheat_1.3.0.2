@@ -50,7 +50,7 @@ void drawEsp1(entity ent, runTimeInfo::pInfo pInfo, entity localPlayer) {
 		if (entity.entHealth <= 0) {
 			continue; // Skip dead entities
 		}
-		Sleep(1); // Simulate slight delay for performance control
+		
 		ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix + pInfo.baseAddr), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
 
 		// Calculate 3D distance directly in the function
@@ -81,6 +81,14 @@ void drawEsp1(entity ent, runTimeInfo::pInfo pInfo, entity localPlayer) {
 				healthText.c_str()
 			);
 
+			// Display distance text
+			std::string distanceText = std::to_string(static_cast<int>(distance)) + "m";
+			ImGui::GetBackgroundDrawList()->AddText(
+				ImVec2(screen.x - ImGui::CalcTextSize(distanceText.c_str()).x / 2, screen.y + h - 5),
+				IM_COL32(255, 255, 255, 255), // White color for distance text
+				distanceText.c_str()
+			);
+
 			// Draw ESP box
 			if (entity.teamId == localPlayer.teamId) {
 				// Green for teammates
@@ -101,6 +109,7 @@ void drawEsp1(entity ent, runTimeInfo::pInfo pInfo, entity localPlayer) {
 		}
 	}
 }
+
 
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
