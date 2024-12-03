@@ -31,39 +31,27 @@ struct draw {
     
     void drawEsp(entity ent, runTimeInfo::pInfo pInfo,entity localPlayer)
     {
-        myMath::Vec2 screen;
-		myMath math;
 		Offsets offsets;
-        DWORD addressEntList;
-        if (!ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pInfo.baseAddr + offsets.entList), &addressEntList, sizeof(addressEntList), NULL)) {
-            std::cout << "entloop error 001  " << std::endl;
+		myMath math;
+		myMath::Vec2 screen;
+		std::vector<entity> entities = ent.readEntityList(pInfo);
 
-
-        }
-
-        int p = 0;
-        if (!ReadProcessMemory(pInfo.pHandle, (LPCVOID)(0x58AC0C), &p, sizeof(p), NULL)) {
-            std::cout << "entloop error 002  " << std::endl;
-        }
-
-        for (int i = 4; i < p * 4; i += 0x4) {
-            DWORD pointer;
-            
-            
-                ReadProcessMemory(pInfo.pHandle, (LPCVOID)(addressEntList + i), &pointer, sizeof(pointer), NULL);
-
-
-
-                ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pointer), &ent, sizeof(ent), NULL);
-
-
-                //CLEAR CONSOLE
-
-                ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix + pInfo.baseAddr), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
-                math.WorldToScreen(ent, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight);
+        for (auto& entity : entities) {
+			Sleep(1);
+            ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix + pInfo.baseAddr), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
+            if (math.WorldToScreen(entity, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight))
+            {
                 drawDotOnScreen(screen.x, screen.y);
-            
+            }
+
+
         }
+		
+               
+
+               
+            
+        
 
 
         return;

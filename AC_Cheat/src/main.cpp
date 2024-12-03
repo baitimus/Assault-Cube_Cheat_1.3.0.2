@@ -33,6 +33,7 @@ int main()
     {
         ent.readLocalplayer(pInfo, localPlayer);
 		Sleep(10);
+        Draw.drawEsp(ent, pInfo, localPlayer);
         if (GetAsyncKeyState(VK_RBUTTON))
         {
             

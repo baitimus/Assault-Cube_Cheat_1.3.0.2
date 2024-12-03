@@ -73,7 +73,7 @@ public:
 			 std::cout << "entloop error 001  " << std::endl;
 		}
 
-		std::cout << "enemys in game " << p - 1<< std::endl;
+		//std::cout << "enemys in game " << p - 1<< std::endl;
 		for (int i = 4; i < p * 4; i += 0x4) {
 			DWORD pointer;
 			
