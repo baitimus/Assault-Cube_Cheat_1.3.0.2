@@ -41,7 +41,8 @@ public:
 
 	void print(const entity& ent) const {
 		
-		std::cout << "Name: " << ent.name << std::endl;
+		std::cout << "Name: " << ent.name[0] + ent.name[1] + ent.name [2]  + ent.name[3] + ent.name[4]<< std::endl;
+
 		std::cout << std::dec <<  "Health: " << ent.entHealth << std::endl;
 		std::cout << "Head X: " << ent.headX << std::endl;
 		std::cout << "Head Y: " << ent.headY << std::endl;
@@ -54,13 +55,14 @@ public:
 		std::cout << "Kills: " << ent.kills << std::endl; // Added kills field
 		std::cout << "Deaths: " << ent.deaths << std::endl; // Added deaths field
 		std::cout << "Team ID: " << ent.teamId << std::endl; // Added teamId field
-		std::cout << "--------------------------------" << std::endl;
+		
 	}
 
 
-	void readEntityList(runTimeInfo::pInfo& ms, entity& ent) {
+	std::vector<entity> readEntityList(runTimeInfo::pInfo& ms, entity& ent) {
 		Offsets offsets; 
 		DWORD addressEntList;
+		std::vector<entity> entities;
 
 		if (!ReadProcessMemory(ms.pHandle, (LPCVOID)(ms.baseAddr + offsets.entList), &addressEntList, sizeof(addressEntList), NULL)) {
 			 std::cout << "entloop error 001  " << std::endl;
@@ -70,20 +72,20 @@ public:
 			 std::cout << "entloop error 001  " << std::endl;
 		}
 
-		std::cout << "players in game: " << p << std::endl;
+		std::cout << "enemys in game " << p - 1<< std::endl;
 		for (int i = 4; i < p * 4; i += 0x4) {
 			DWORD pointer;
-			std::cout << "Address: " << addressEntList + i << std::endl;
+			
 			ReadProcessMemory(ms.pHandle,(LPCVOID)(addressEntList + i), &pointer, sizeof(pointer), NULL);
-			std::cout << "Pointer: " << pointer << std::endl;	
+				
 			ReadProcessMemory(ms.pHandle, (LPCVOID)(pointer), &ent, sizeof(ent), NULL);
-			ent.print(ent);
+			entities.push_back(ent);
 		}
 
 
 
 
-
+		return entities;
 	}
 	void readLocalplayer(runTimeInfo::pInfo& ms, entity& localPlayer) {
 	

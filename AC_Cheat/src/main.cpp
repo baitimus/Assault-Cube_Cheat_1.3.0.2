@@ -22,14 +22,26 @@ entity localPlayer;
 int main()
 {
     run.setup(pInfo.pHandle, pInfo);
-
+    
     ent.readLocalplayer(pInfo, localPlayer);
-	ent.print(localPlayer);
-
-    while (true)
+    
+    std::vector<entity> entities;
+    
+	entities = ent.readEntityList(pInfo, ent);
+    
+    for (const auto& entity : entities) {
+        entity.print(entity); 
+    }
+    
+    
+    
+    
+    
+   /*while (true)
     {
         ent.readLocalplayer(pInfo, localPlayer);
-		Draw.drawEsp(ent, pInfo);
+
+		Draw.drawEsp(ent, pInfo,localPlayer);
 		//if right mus button is pressed
 		if (GetAsyncKeyState(VK_RBUTTON))
 		{
@@ -38,7 +50,7 @@ int main()
         Sleep(1);
     }
     
-    
+    */
        
     
 

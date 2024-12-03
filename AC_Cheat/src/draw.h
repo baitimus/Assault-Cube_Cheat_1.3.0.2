@@ -29,7 +29,7 @@ struct draw {
 
 
     
-    void drawEsp(entity ent, runTimeInfo::pInfo pInfo)
+    void drawEsp(entity ent, runTimeInfo::pInfo pInfo,entity localPlayer)
     {
         myMath::Vec2 screen;
 		myMath math;
@@ -49,19 +49,20 @@ struct draw {
         for (int i = 4; i < p * 4; i += 0x4) {
             DWORD pointer;
             
-            ReadProcessMemory(pInfo.pHandle, (LPCVOID)(addressEntList + i), &pointer, sizeof(pointer), NULL);
+            
+                ReadProcessMemory(pInfo.pHandle, (LPCVOID)(addressEntList + i), &pointer, sizeof(pointer), NULL);
 
-           
-           
-            ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pointer), &ent, sizeof(ent), NULL);
-                
-        
-            //CLEAR CONSOLE
-		
-            ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix + pInfo.baseAddr ), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
-			math.WorldToScreen(ent, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight);
-			drawDotOnScreen(screen.x, screen.y);    
-			
+
+
+                ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pointer), &ent, sizeof(ent), NULL);
+
+
+                //CLEAR CONSOLE
+
+                ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix + pInfo.baseAddr), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
+                math.WorldToScreen(ent, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight);
+                drawDotOnScreen(screen.x, screen.y);
+            
         }
 
 

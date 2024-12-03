@@ -15,6 +15,7 @@ class aim {
 			myMath math;
 			Offsets offsets;
 			DWORD addressEntList;
+
 			if (!ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pInfo.baseAddr + offsets.entList), &addressEntList, sizeof(addressEntList), NULL)) {
 				std::cout << "entloop error 001  " << std::endl;
 
