@@ -1,5 +1,5 @@
 
-Sure! Here's an updated version of your README file, making it look cooler while adding information about ImGui for the overlay:
+
 
 🚀 Assault Cube Cheat (Work in Progress)
 A simple, yet powerful, proof-of-concept cheat for Assault Cube. This project is designed to demonstrate game hacking techniques, featuring an ESP (Extrasensory Perception) system and an Aimbot for enhanced gameplay. It's currently under development and showcases key concepts such as memory manipulation, reverse engineering, and external game hacking.
