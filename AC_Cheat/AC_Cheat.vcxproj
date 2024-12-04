@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\cheat\overlay.cpp" />
     <ClCompile Include="src\imgui\imgui.cpp" />
     <ClCompile Include="src\imgui\imgui_demo.cpp" />
     <ClCompile Include="src\imgui\imgui_draw.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="src\cheat\entity.h" />
     <ClInclude Include="src\cheat\math.h" />
     <ClInclude Include="src\cheat\offsets.h" />
+    <ClInclude Include="src\cheat\overlay.h" />
     <ClInclude Include="src\cheat\pch.h" />
     <ClInclude Include="src\cheat\winapi.h" />
     <ClInclude Include="src\imgui\imconfig.h" />

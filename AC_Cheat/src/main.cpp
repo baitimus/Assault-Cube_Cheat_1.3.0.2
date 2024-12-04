@@ -1,6 +1,6 @@
 #pragma once
 #include "cheat/pch.h"
-
+#include "cheat/overlay.h"
 #include "cheat/winapi.h"
 #include "cheat/offsets.h"
 #include "cheat/entity.h"
@@ -15,6 +15,7 @@
 
 
 
+
 int displayWidth = GetSystemMetrics(SM_CXSCREEN);
 int displayHeight = GetSystemMetrics(SM_CYSCREEN);
 // classes 
@@ -25,20 +26,8 @@ runTimeInfo run;
 entity ent;
 entity localPlayer;
 
-//imgui
-#define IM_COL32(R, G, B, A) (((ImU32)(A) << 24) | ((ImU32)(B) << 16) | ((ImU32)(G) << 8) | ((ImU32)(R)))
 
-	// RGB struct to store color components
-typedef struct {
-	int R, G, B;
-} RGB;
 
-// Function to convert RGB to ImU32 using IM_COL32
-ImU32 Color(RGB color) {
-	return IM_COL32(color.R, color.G, color.B, 255); // Default alpha = 255 (opaque)
-}
-
-// Updated drawEsp function
 void drawEsp1(entity ent, runTimeInfo::pInfo pInfo, entity localPlayer) {
 	Offsets offsets;
 	myMath math;
@@ -112,213 +101,17 @@ void drawEsp1(entity ent, runTimeInfo::pInfo pInfo, entity localPlayer) {
 
 
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-
-LRESULT CALLBACK window_procedure(HWND window, UINT msg, WPARAM wParam, LPARAM lParam)
+INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 {
-	// set up ImGui window procedure handler
-	if (ImGui_ImplWin32_WndProcHandler(window, msg, wParam, lParam))
-		return true;
-
-	// switch that disables alt application and checks for if the user tries to close the window.
-	switch (msg)
-	{
-	case WM_SYSCOMMAND:
-		if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu (imgui uses it in their example :shrug:)
-			return 0;
-		break;
-
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
-
-	case WM_CLOSE:
-		return 0;
-	}
-
-	// define the window procedure
-	return DefWindowProc(window, msg, wParam, lParam);
-}
-
-INT APIENTRY  WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
-{
-
-
 	run.setup(pInfo.pHandle, pInfo);
 
-
-	WNDCLASSEXW wc = {  };
-	wc.cbSize = sizeof(WNDCLASSEXW);
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = window_procedure;
-	wc.hInstance = instance;
-	wc.lpszClassName = L"AC_Cheat";
-
-
-
-	RegisterClassExW(&wc);
-
-
-	const HWND overlay = CreateWindowExW(WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED, wc.lpszClassName, L"AC_Cheat", WS_POPUP, 0, 0, displayWidth, displayHeight, nullptr, nullptr, wc.hInstance, nullptr);
-
-
-	SetLayeredWindowAttributes(overlay, RGB(0, 0, 0), BYTE(255), LWA_ALPHA);
-	{
-
-		RECT clientArea;
-		GetClientRect(overlay, &clientArea);
-
-		RECT windowArea;
-		GetWindowRect(overlay, &windowArea);
-
-		POINT diff{};
-		ClientToScreen(overlay, &diff);
-
-		const MARGINS margins = {
-			windowArea.left + (diff.x - windowArea.left),
-			windowArea.top + (diff.y - windowArea.top),
-			clientArea.right,
-			clientArea.bottom
-		};
-
-		DwmExtendFrameIntoClientArea(overlay, &margins);
-	}
-
-
-
-	DXGI_SWAP_CHAIN_DESC scd = {};
-	scd.BufferDesc.RefreshRate.Numerator = 144; // fps
-	scd.BufferDesc.RefreshRate.Denominator = 1U;
-	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	scd.SampleDesc.Count = 1U;
-	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	scd.BufferCount = 2U;
-	scd.OutputWindow = overlay;
-	scd.Windowed = TRUE;
-	scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-	constexpr D3D_FEATURE_LEVEL levels[2]{
-
-		D3D_FEATURE_LEVEL_11_0,
-		D3D_FEATURE_LEVEL_10_0
-
-
-	};
-
-
-	ID3D11Device* device = {nullptr};
-	ID3D11DeviceContext* deviceContext = { nullptr };
-	IDXGISwapChain* swapChain = { nullptr };
-	ID3D11RenderTargetView* renderTargetView = { nullptr };
-	D3D_FEATURE_LEVEL level{};
-
-
-	//create device
-
-	D3D11CreateDeviceAndSwapChain(nullptr, 
-		D3D_DRIVER_TYPE_HARDWARE, 
-		nullptr, 
-		0U, 
-		levels
-		,2U
-		, D3D11_SDK_VERSION
-		, &scd
-		, &swapChain
-		, &device
-		,&level
-		,&deviceContext);
-
-
-	ID3D11Texture2D* backBuffer = { nullptr };
-	swapChain->GetBuffer(0U,IID_PPV_ARGS(&backBuffer));
-	if (backBuffer)
-	{
-		device->CreateRenderTargetView(backBuffer, nullptr, &renderTargetView);
-		backBuffer->Release();
-
-
-	}
-	else
+	Overlay overlay;
+	if (!overlay.Initialize(instance))
 	{
 		return 1;
 	}
-	ShowWindow(overlay, cmd_show);
-	UpdateWindow(overlay);
 
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
+	overlay.Run();
 
-
-	ImGui_ImplWin32_Init(overlay);
-	ImGui_ImplDX11_Init(device, deviceContext);
-
-	bool overlayRunning = true;
-
-	while (overlayRunning)
-	{
-		MSG msg;
-		while (PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-
-			if (msg.message == WM_QUIT)
-			{
-				overlayRunning = false;
-			}
-		}
-
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-		drawEsp1(ent, pInfo, localPlayer);
-		//if right mouse button is pressed
-		
-		ImGui::Render();
-
-		float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-		deviceContext->OMSetRenderTargets(1U,&renderTargetView, nullptr);
-		deviceContext->ClearRenderTargetView(renderTargetView, color);
-
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-		swapChain->Present(0U, 0U);
-			
-
-
-
-
-	}
-
-
-
-
-
-
-	//exiting
-
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
-	if (swapChain)
-	{
-
-		swapChain->Release();
-	}
-	if (deviceContext)
-	{
-		deviceContext->Release();
-	}
-	if (device)
-	{
-		device->Release();
-	}
-	if (renderTargetView)
-	{
-		renderTargetView->Release();
-	}
-	DestroyWindow(overlay);
-	UnregisterClassW(wc.lpszClassName, wc.hInstance);
+	return 0;
 }
