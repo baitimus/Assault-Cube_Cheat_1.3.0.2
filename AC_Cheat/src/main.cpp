@@ -5,7 +5,7 @@
 #include "cheat/offsets.h"
 #include "cheat/entity.h"
 #include "cheat/math.h"
-#include "cheat/draw.h"
+
 #include "cheat/aimbot.h"
 
 #include "imgui/imgui.h"
@@ -20,7 +20,7 @@ int displayWidth = GetSystemMetrics(SM_CXSCREEN);
 int displayHeight = GetSystemMetrics(SM_CYSCREEN);
 // classes 
 runTimeInfo::pInfo pInfo;
-draw Draw;
+
 aim aimbot;
 runTimeInfo run;
 entity ent;
