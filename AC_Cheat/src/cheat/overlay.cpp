@@ -196,7 +196,15 @@ void Overlay::Render()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-   
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 displaySize = io.DisplaySize;
+    ImVec2 textSize = ImGui::CalcTextSize("Overlay working");
+    ImVec2 textPos = ImVec2((displaySize.x - textSize.x) / 2.0f, (displaySize.y - textSize.y) / 2.0f);
+
+    // Draw the text at the calculated position
+    ImGui::GetForegroundDrawList()->AddText(textPos, IM_COL32(255, 255, 255, 255), "Overlay working");
+
+
 
 
 
