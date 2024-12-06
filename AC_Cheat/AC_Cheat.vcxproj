@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="src\cheat\aim\aimbot.cpp" />
     <ClCompile Include="src\cheat\entity\entity.cpp" />
+    <ClCompile Include="src\cheat\esp\esp.cpp" />
     <ClCompile Include="src\cheat\math.cpp" />
     <ClCompile Include="src\cheat\overlay\overlay.cpp" />
     <ClCompile Include="src\cheat\winapi.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="src\cheat\aim\aimbot.h" />
     <ClInclude Include="src\cheat\entity\entity.h" />
     <ClInclude Include="src\cheat\entity\offsets.h" />
+    <ClInclude Include="src\cheat\esp\esp.h" />
     <ClInclude Include="src\cheat\math.h" />
     <ClInclude Include="src\cheat\overlay\overlay.h" />
     <ClInclude Include="src\cheat\pch.h" />
