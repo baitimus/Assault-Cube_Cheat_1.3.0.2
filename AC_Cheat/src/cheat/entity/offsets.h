@@ -13,6 +13,7 @@ public:
     std::uintptr_t hight = width + 0x4;
     std::uintptr_t numberOfPlayers = 0x18AC04;
     std::uintptr_t localPlayer = 0x17E0A8;
+	std::uintptr_t gameMode = 0x58ABF8;
 
     // 0x1DC = kills
     //deaths = 0x1D8
