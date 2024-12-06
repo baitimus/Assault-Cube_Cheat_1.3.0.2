@@ -20,11 +20,11 @@ void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
     ent.readLocalplayer(pInfo, localPlayer);
 
     int gameMode;
-    BOOL success = ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.gameMode), &gameMode, sizeof(gameMode), NULL);
+   ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.gameMode), &gameMode, sizeof(gameMode), NULL);
 
   
 
-
+ 
     for (auto& entity : entities) {
         if (entity.entHealth <= 0) {
             continue;
