@@ -1,11 +1,24 @@
-Assault Cube Cheat (Work in Progress)
-A simple proof-of-concept cheat for Assault Cube. This project is designed to demonstrate basic game hacking techniques and is currently under development.
+# AssaultCube Cheat - Aimbot & ESP
 
-Features
-ESP (Extrasensory Perception): Highlights enemy players for enhanced visibility.
-Working Aimbot: Automatically aims at enemy players for improved accuracy.
-About
-This cheat is intended for educational purposes and as a way to explore concepts such as memory manipulation, reverse engineering, and external game hacking.
+This is my first game hacking project, a cheat for *AssaultCube* version 1.3.0.2, written in **C++**. It includes an **aimbot** and **ESP** (Extra-Sensory Perception) using an overlay with **ImGui**.
 
-Disclaimer
-This software is a work in progress and is not intended for malicious use. Use responsibly and in controlled environments, such as private servers or with permission. The author takes no responsibility for any misuse or consequences resulting from the use of this software.
+## Features
+- **Aimbot**: Automatically aims at enemy heads when the right mouse button is pressed. This functionality adjusts the crosshair to target the head based on the opponent’s position.
+- **ESP (Extra-Sensory Perception)**: Displays enemy positions on the screen. The positions are marked as points or objects, making it easier to spot opponents.
+
+## Technical Details
+- **Programming Language**: C++
+- **Overlay**: Built using **DirectX** and **ImGui** for rendering visual elements on the screen.
+- **Game**: *AssaultCube* (version 1.3.0.2)
+- **Core Features**:
+  - **Aimbot**: Uses opponent positions to aim at their heads when activated.
+  - **ESP**: Provides a clear visual representation of enemy positions on the screen.
+- **Performance Focus**: The cheat is designed to be lightweight with an emphasis on performance.
+
+## Project Status
+This project is ongoing, with the current focus on **stability** and **functional completeness**. The planned completion date is **December 16, 2024**.
+
+## Installation
+1. Clone the repository to your local machine.
+   ```bash
+   git clone https://github.com/yourusername/assaultcube-cheat.git
