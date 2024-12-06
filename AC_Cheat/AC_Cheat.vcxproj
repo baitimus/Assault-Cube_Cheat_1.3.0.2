@@ -127,16 +127,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\cheat\aim\aimbot.cpp" />
+    <ClCompile Include="src\cheat\entity\entity.cpp" />
+    <ClCompile Include="src\cheat\math.cpp" />
+    <ClCompile Include="src\cheat\overlay\overlay.cpp" />
+    <ClCompile Include="src\cheat\winapi.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\aimbot.h" />
-    <ClInclude Include="src\draw.h" />
-    <ClInclude Include="src\entity.h" />
-    <ClInclude Include="src\math.h" />
-    <ClInclude Include="src\offsets.h" />
-    <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\winapi.h" />
+    <ClInclude Include="src\cheat\aim\aimbot.h" />
+    <ClInclude Include="src\cheat\entity\entity.h" />
+    <ClInclude Include="src\cheat\entity\offsets.h" />
+    <ClInclude Include="src\cheat\math.h" />
+    <ClInclude Include="src\cheat\overlay\overlay.h" />
+    <ClInclude Include="src\cheat\pch.h" />
+    <ClInclude Include="src\cheat\winapi.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

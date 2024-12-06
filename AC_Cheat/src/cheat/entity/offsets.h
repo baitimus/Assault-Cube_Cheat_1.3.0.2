@@ -1,9 +1,9 @@
 #pragma once
-#include "pch.h"
+#include "../pch.h"
 
 
 class Offsets {
-    public:
+public:
     std::uintptr_t entList = 0x18AC04;
     std::uintptr_t fov = 0x18A7CC;
     std::uintptr_t playerCount = 0x18AC0C;
@@ -12,8 +12,8 @@ class Offsets {
     std::uintptr_t width = 0x191ED8;
     std::uintptr_t hight = width + 0x4;
     std::uintptr_t numberOfPlayers = 0x18AC04;
-	std::uintptr_t localPlayer = 0x17E0A8;
-        
+    std::uintptr_t localPlayer = 0x17E0A8;
+
     // 0x1DC = kills
     //deaths = 0x1D8
     // rifelbullet = 0x138
