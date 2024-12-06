@@ -168,6 +168,7 @@ void Overlay::Run(runTimeInfo::pInfo& pInfo)
 
     while (m_Running)
     {
+
         MSG msg;
         while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
