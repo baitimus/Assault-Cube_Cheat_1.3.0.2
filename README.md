@@ -1,22 +1,24 @@
+# AssaultCube Cheat - Aimbot & ESP
 
+This is my first game hacking project, a cheat for *AssaultCube* version 1.3.0.2, written in **C++**. It includes an **aimbot** and **ESP** (Extra-Sensory Perception) using an overlay with **ImGui**.
 
+## Features
+- **Aimbot**: Automatically aims at enemy heads when the right mouse button is pressed. This functionality adjusts the crosshair to target the head based on the opponent’s position.
+- **ESP (Extra-Sensory Perception)**: Displays enemy positions on the screen. The positions are marked as points or objects, making it easier to spot opponents.
 
-🚀 Assault Cube Cheat (Work in Progress)
-A simple, yet powerful, proof-of-concept cheat for Assault Cube. This project is designed to demonstrate game hacking techniques, featuring an ESP (Extrasensory Perception) system and an Aimbot for enhanced gameplay. It's currently under development and showcases key concepts such as memory manipulation, reverse engineering, and external game hacking.
+## Technical Details
+- **Programming Language**: C++
+- **Overlay**: Built using **DirectX** and **ImGui** for rendering visual elements on the screen.
+- **Game**: *AssaultCube* (version 1.3.0.2)
+- **Core Features**:
+  - **Aimbot**: Uses opponent positions to aim at their heads when activated.
+  - **ESP**: Provides a clear visual representation of enemy positions on the screen.
+- **Performance Focus**: The cheat is designed to be lightweight with an emphasis on performance.
 
-⚙️ Features
-🌟 ESP (Extrasensory Perception)
-Automatically highlights enemy players, making them easier to spot and track.
-Enhances visibility in the game world to give you the competitive edge.
-🎯 Aimbot
-Locks your aim on enemy players, ensuring accurate shots every time.
-Helps improve your shooting accuracy and reaction times.
-🖥️ Overlay with ImGui
-An ImGui-powered overlay is used for rendering the cheat features on screen.
-The overlay is clean, fast, and customizable, providing an interactive GUI for controlling the cheat in real-time.
-🧑‍🏫 About
-This cheat is designed solely for educational purposes. It serves as a simple demonstration of how game hacks like ESP and Aimbot can be implemented using basic memory manipulation techniques. This project provides valuable insights into game hacking, reverse engineering, and using external libraries such as ImGui for creating overlays in games.
+## Project Status
+This project is ongoing, with the current focus on **stability** and **functional completeness**. The planned completion date is **December 16, 2024**.
 
-
-![Screenshot 2024-12-04 142611](https://github.com/user-attachments/assets/6fac3cf8-ac31-42d5-bf94-b98ae8b6dbe2)
-
+## Installation
+1. Clone the repository to your local machine.
+   ```bash
+   git clone https://github.com/yourusername/assaultcube-cheat.git
