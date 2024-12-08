@@ -21,4 +21,4 @@ This project is ongoing, with the current focus on **stability** and **functiona
 ## Installation
 1. Clone the repository to your local machine.
    ```bash
-   git clone https://github.com/yourusername/assaultcube-cheat.git
+   git https://github.com/baitimus/Assault-Cube_Cheat_1.3.0.2
