@@ -197,12 +197,41 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo)
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    // Draw visuals and aimbot
+    // aim::aimbot(pInfo);
+    Visuals::drawEsp(pInfo);
 
-	//aim::aimbot(pInfo);
-	Visuals::drawEsp(pInfo);
+    // Watermark settings
+    ImGui::SetNextWindowBgAlpha(0.4f); // Semi-transparent background
+    ImGui::SetNextWindowPos(ImVec2(15, 15), ImGuiCond_Always); // Top-left corner
+    ImGui::Begin("##Watermark", nullptr,
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoCollapse |
+        ImGuiWindowFlags_AlwaysAutoResize);
 
+    // Dynamic animation effect
+    static float hue = 0.0f;
+    hue += 0.01f;
+    if (hue > 1.0f) hue = 0.0f;
+    ImVec4 dynamicColor = ImColor::HSV(hue, 0.8f, 0.8f);
 
+    // Header with gradient
+    ImGui::TextColored(dynamicColor, "?? baitis's AssaultCube Cheat v1.0 ??");
+    ImGui::Separator();
 
+    // Subtext with shadow effect
+    ImGui::Text("Stay cool, play smart!");
+
+    // Icon-like bullets
+    ImGui::BulletText("Feature 1: ESP Active");
+    ImGui::BulletText("Feature 2: Aimbot Ready");
+
+    ImGui::End();
+
+    // Render ImGui
     ImGui::Render();
 
     const float clear_color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -211,6 +240,7 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo)
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
     m_SwapChain->Present(0, 0);
 }
+
 void Overlay::CleanupRenderTarget()
 {
     if (m_RenderTargetView)
