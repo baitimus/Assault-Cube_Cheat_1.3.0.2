@@ -13,7 +13,8 @@ This is my first game hacking project, a cheat for *AssaultCube* version 1.3.0.2
 - **Core Features**:
   - **Aimbot**: Uses opponent positions to aim at their heads when activated.
   - **ESP**: Provides a clear visual representation of enemy positions on the screen.
-- **Performance Focus**: The cheat is designed to be lightweight with an emphasis on performance.
+- **Performance Focus**: The cheat is designed to be lightweight with an emphasis on performance, utilizing **multi-threading** for better efficiency and responsiveness.
+- **Future Plans**: I plan to integrate a **kernel driver** for read and write memory access, which will further optimize the cheat's performance and stability.
 
 ## Project Status
 This project is ongoing, with the current focus on **stability** and **functional completeness**. The planned completion date is **December 16, 2024**.
