@@ -10,7 +10,7 @@ namespace aim {
         entity ent;
 		entity localPlayer;
 		ent.readLocalplayer(pInfo, localPlayer);
-
+        
         std::vector<entity> entities = ent.readEntityList(pInfo);
 
         float closestDistance = FLT_MAX;

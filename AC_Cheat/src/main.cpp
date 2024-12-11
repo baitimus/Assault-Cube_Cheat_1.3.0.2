@@ -51,7 +51,6 @@ void miscThread(runTimeInfo::pInfo& pInfo) {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
-
 void overlayThread(HINSTANCE instance, runTimeInfo::pInfo& pInfo) {
    
     Overlay& overlay = Overlay::Instance();
