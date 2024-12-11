@@ -199,6 +199,7 @@ void Overlay::Run(runTimeInfo::pInfo& pInfo)
 }
 void Overlay::Render(runTimeInfo::pInfo& pInfo)
 {
+    Overlay& overlay = Overlay::Instance();
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
@@ -214,33 +215,35 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo)
     }
 
     ImGui::End();
+    if (overlay.drawMenu)
+    {
+        // Set up the cheat menu window
+        ImGui::SetNextWindowPos(ImVec2(10.0f, 100.0f), ImGuiCond_Always);  // Position it to the right of the debug window
+        ImGui::SetNextWindowSize(ImVec2(200.0f, 100.0f), ImGuiCond_Always);  // Adjust size of the cheat menu window
+        ImGui::Begin("AC Cheat", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
-    // Set up the cheat menu window
-    ImGui::SetNextWindowPos(ImVec2(10.0f, 100.0f), ImGuiCond_Always);  // Position it to the right of the debug window
-    ImGui::SetNextWindowSize(ImVec2(200.0f, 100.0f), ImGuiCond_Always);  // Adjust size of the cheat menu window
-    ImGui::Begin("AC Cheat", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        // Style setup for better visibility
+        ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));  // Green checkmark
 
-    // Style setup for better visibility
-    ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));  // Green checkmark
+        // Add toggles with some spacing
+        ImGui::Spacing();
+        static bool enableESP = true;
+        ImGui::Checkbox("ESP", &enableESP);
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+        static bool enableAimbot = false;
+        ImGui::Checkbox("Aimbot", &enableAimbot);
+        ImGui::Spacing();
 
-    // Add toggles with some spacing
-    ImGui::Spacing();
-    static bool enableESP = true;
-    ImGui::Checkbox("ESP", &enableESP);
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::Spacing();
-    static bool enableAimbot = false;
-    ImGui::Checkbox("Aimbot", &enableAimbot);
-    ImGui::Spacing();
-
-    ImGui::PopStyleColor();
-    ImGui::End();
-
-    // Draw ESP if enabled
-    if (enableESP) {
-        Visuals::drawEsp(pInfo);
+        ImGui::PopStyleColor();
+        ImGui::End();
     }
+    
+  
+  
+        Visuals::drawEsp(pInfo);
+    
 
     ImGui::Render();
 
@@ -301,3 +304,4 @@ template void Overlay::AddDebugMessage<int>(const int& value);
 template void Overlay::AddDebugMessage<float>(const float& value);
 template void Overlay::AddDebugMessage<double>(const double& value);
 template void Overlay::AddDebugMessage<std::string>(const std::string& value);
+

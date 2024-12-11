@@ -30,6 +30,7 @@ public:
         oss << value;
         AddDebugMessage(oss.str());
     }
+    bool drawMenu = true;
 
 private:
     //  constructor and destructor
@@ -54,6 +55,7 @@ private:
     bool m_Running;
     std::vector<std::string> m_DebugLog;
     std::mutex m_DebugMutex;
+    
 
     // Helper methods
     bool InitializeWindow(HINSTANCE instance);
