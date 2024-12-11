@@ -1,5 +1,6 @@
 #include "overlay.h"
-#include "../esp/esp.h"
+
+
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -24,21 +25,25 @@ LRESULT CALLBACK WindowProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(window, msg, wParam, lParam);
 }
 
+Overlay& Overlay::Instance() {
+    static Overlay instance; // The single instance of Overlay
+    return instance;
+}
+
 Overlay::Overlay()
-    : m_Overlay(nullptr)
-    , m_Device(nullptr)
-    , m_DeviceContext(nullptr)
-    , m_SwapChain(nullptr)
-    , m_RenderTargetView(nullptr)
-    , m_Running(false)
-{
+    : m_Overlay(nullptr), m_Device(nullptr), m_DeviceContext(nullptr),
+    m_SwapChain(nullptr), m_RenderTargetView(nullptr), m_Running(false) {
     m_DisplayWidth = GetSystemMetrics(SM_CXSCREEN);
     m_DisplayHeight = GetSystemMetrics(SM_CYSCREEN);
 }
 
-Overlay::~Overlay()
-{
+Overlay::~Overlay() {
     Shutdown();
+}
+
+void Overlay::AddDebugMessage(const std::string& message) {
+    std::lock_guard<std::mutex> lock(m_DebugMutex); // Thread-safe access
+    m_DebugLog.push_back(message);
 }
 
 bool Overlay::Initialize(HINSTANCE instance)
@@ -184,8 +189,8 @@ void Overlay::Run(runTimeInfo::pInfo& pInfo)
 
         if (!m_Running)
             break;
-		
-		
+
+
 
 
         Render(pInfo);
@@ -197,41 +202,27 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo)
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    // Draw visuals and aimbot
-    // aim::aimbot(pInfo);
-    Visuals::drawEsp(pInfo);
+    ImGui::Begin("Debug Window", nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_AlwaysAutoResize);
 
-    // Watermark settings
-    ImGui::SetNextWindowBgAlpha(0.4f); // Semi-transparent background
-    ImGui::SetNextWindowPos(ImVec2(15, 15), ImGuiCond_Always); // Top-left corner
-    ImGui::Begin("##Watermark", nullptr,
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoScrollbar |
-        ImGuiWindowFlags_NoCollapse |
-        ImGuiWindowFlags_AlwaysAutoResize);
+    // Set the window size directly
+    ImVec2 debugWindowSize(600.0f, 400.0f);  // Set your preferred size
+    ImGui::SetWindowSize(debugWindowSize, ImGuiCond_Always);  // Always keep the fixed size
 
-    // Dynamic animation effect
-    static float hue = 0.0f;
-    hue += 0.01f;
-    if (hue > 1.0f) hue = 0.0f;
-    ImVec4 dynamicColor = ImColor::HSV(hue, 0.8f, 0.8f);
+    // Display each debug message
+    for (const auto& msg : m_DebugLog) {
+        ImGui::Text("%s", msg.c_str());
+    }
 
-    // Header with gradient
-    ImGui::TextColored(dynamicColor, "?? baitis's AssaultCube Cheat v1.0 ??");
-    ImGui::Separator();
-
-    // Subtext with shadow effect
-    ImGui::Text("Stay cool, play smart!");
-
-    // Icon-like bullets
-    ImGui::BulletText("Feature 1: ESP Active");
-    ImGui::BulletText("Feature 2: Aimbot Ready");
-
+    // End the debug window
     ImGui::End();
 
-    // Render ImGui
+
+
+    ImGui::Render();
+  
+
+
+
     ImGui::Render();
 
     const float clear_color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -240,7 +231,6 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo)
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
     m_SwapChain->Present(0, 0);
 }
-
 void Overlay::CleanupRenderTarget()
 {
     if (m_RenderTargetView)
@@ -282,3 +272,12 @@ void Overlay::Shutdown()
 
     UnregisterClassW(m_WindowClass.lpszClassName, m_WindowClass.hInstance);
 }
+
+
+
+
+// Explicit template instantiations for common types
+template void Overlay::AddDebugMessage<int>(const int& value);
+template void Overlay::AddDebugMessage<float>(const float& value);
+template void Overlay::AddDebugMessage<double>(const double& value);
+template void Overlay::AddDebugMessage<std::string>(const std::string& value);

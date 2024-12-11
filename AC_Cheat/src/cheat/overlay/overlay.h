@@ -1,45 +1,63 @@
 #pragma once
+
 #include "../../imgui/imgui.h"
 #include "../../imgui/imgui_impl_dx11.h"
 #include "../../imgui/imgui_impl_win32.h"
-#include "../pch.h"
-#include <d3d11.h>
-#include "../aim/aimbot.h"
-#include "../entity/entity.h"
-#include "../winapi.h"
+#include "../../cheat/pch.h"
+#include "../../cheat/winapi.h"
+#include <mutex>
+#include <string>
+#include <vector>
+#include <sstream>
 
 class Overlay {
 public:
-    Overlay();
-    ~Overlay();
+    // Singleton access
+    static Overlay& Instance();
 
+    // Public methods
     bool Initialize(HINSTANCE instance);
     void Run(runTimeInfo::pInfo& pInfo);
     void Shutdown();
 
-    // Getter for the window handle if needed
-    HWND GetWindow() const { return m_Overlay; }
+    // Debug logging
+    void AddDebugMessage(const std::string& message);
+
+    template<typename T>
+    void AddDebugMessage(const T& value) {
+        std::ostringstream oss;
+        oss << value;
+        AddDebugMessage(oss.str());
+    }
 
 private:
-    bool InitializeWindow(HINSTANCE instance);
-    bool InitializeDirectX();
-    bool CreateRenderTarget();
-    void CleanupRenderTarget();
-    void Render(runTimeInfo::pInfo& pInfo);
+    // Private constructor and destructor
+    Overlay();
+    ~Overlay();
 
-    // Window related
+    // Disable copy and assignment
+    Overlay(const Overlay&) = delete;
+    Overlay& operator=(const Overlay&) = delete;
+
+    // Other private members
     HWND m_Overlay;
     WNDCLASSEXW m_WindowClass;
     int m_DisplayWidth;
     int m_DisplayHeight;
 
-    // DirectX related
     ID3D11Device* m_Device;
     ID3D11DeviceContext* m_DeviceContext;
     IDXGISwapChain* m_SwapChain;
     ID3D11RenderTargetView* m_RenderTargetView;
 
     bool m_Running;
+    std::vector<std::string> m_DebugLog;
+    std::mutex m_DebugMutex;
+
+    // Helper methods
+    bool InitializeWindow(HINSTANCE instance);
+    bool InitializeDirectX();
+    bool CreateRenderTarget();
+    void CleanupRenderTarget();
+    void Render(runTimeInfo::pInfo& pInfo);
 };
-
-
