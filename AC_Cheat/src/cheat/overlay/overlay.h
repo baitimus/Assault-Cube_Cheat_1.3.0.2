@@ -5,6 +5,7 @@
 #include "../../imgui/imgui_impl_win32.h"
 #include "../../cheat/pch.h"
 #include "../../cheat/winapi.h"
+#include "../../cheat/esp/esp.h"
 #include <mutex>
 #include <string>
 #include <vector>
@@ -31,7 +32,7 @@ public:
     }
 
 private:
-    // Private constructor and destructor
+    //  constructor and destructor
     Overlay();
     ~Overlay();
 
@@ -39,7 +40,7 @@ private:
     Overlay(const Overlay&) = delete;
     Overlay& operator=(const Overlay&) = delete;
 
-    // Other private members
+    
     HWND m_Overlay;
     WNDCLASSEXW m_WindowClass;
     int m_DisplayWidth;

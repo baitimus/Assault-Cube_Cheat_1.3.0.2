@@ -9,6 +9,7 @@ HANDLE pHandle;
 
 
 void aimbotThread(runTimeInfo::pInfo& pInfo) {
+    runTimeInfo::SetUp(pInfo);
     while (true) {
         if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
             aim::aimbot(pInfo);
@@ -38,7 +39,7 @@ void overlayThread(HINSTANCE instance, runTimeInfo::pInfo& pInfo) {
 
 INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
    
-    runTimeInfo::SetUp(pInfo);
+    
 
     
     Overlay::Instance().AddDebugMessage("Starting application...");
