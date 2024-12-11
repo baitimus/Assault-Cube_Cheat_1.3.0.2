@@ -7,7 +7,7 @@ runTimeInfo::pInfo pInfo;
 entity ent;
 HANDLE pHandle;
 
-// Aimbot thread function
+
 void aimbotThread(runTimeInfo::pInfo& pInfo) {
     while (true) {
         if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
@@ -21,7 +21,7 @@ void aimbotThread(runTimeInfo::pInfo& pInfo) {
 
 // Overlay thread function
 void overlayThread(HINSTANCE instance, runTimeInfo::pInfo& pInfo) {
-    // Access the singleton instance
+   
     Overlay& overlay = Overlay::Instance();
 
     if (!overlay.Initialize(instance)) {
@@ -29,17 +29,18 @@ void overlayThread(HINSTANCE instance, runTimeInfo::pInfo& pInfo) {
         return;
     }
 
-    // Log a message from the overlay thread
+   
     overlay.AddDebugMessage("Overlay initialized successfully.");
 
     overlay.Run(pInfo);
+   
 }
 
 INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
    
-    //runTimeInfo::SetUp(pInfo);
+    runTimeInfo::SetUp(pInfo);
 
-    // Log a global debug message
+    
     Overlay::Instance().AddDebugMessage("Starting application...");
 
     

@@ -26,7 +26,7 @@ LRESULT CALLBACK WindowProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 Overlay& Overlay::Instance() {
-    static Overlay instance; // The single instance of Overlay
+    static Overlay instance; 
     return instance;
 }
 
@@ -192,8 +192,9 @@ void Overlay::Run(runTimeInfo::pInfo& pInfo)
 
 
 
-
+       
         Render(pInfo);
+        
     }
 }
 void Overlay::Render(runTimeInfo::pInfo& pInfo)
@@ -204,21 +205,21 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo)
 
     ImGui::Begin("Debug Window", nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_AlwaysAutoResize);
 
-    // Set the window size directly
-    ImVec2 debugWindowSize(600.0f, 400.0f);  // Set your preferred size
-    ImGui::SetWindowSize(debugWindowSize, ImGuiCond_Always);  // Always keep the fixed size
+    
+    ImVec2 debugWindowSize(600.0f, 400.0f);  
+    ImGui::SetWindowSize(debugWindowSize, ImGuiCond_Always);  
 
     // Display each debug message
     for (const auto& msg : m_DebugLog) {
         ImGui::Text("%s", msg.c_str());
     }
 
-    // End the debug window
+    
     ImGui::End();
 
 
 
-    ImGui::Render();
+   
   
 
 

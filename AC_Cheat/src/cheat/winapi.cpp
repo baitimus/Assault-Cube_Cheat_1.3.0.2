@@ -1,5 +1,5 @@
 #include "winapi.h"
-
+#include "overlay/overlay.h"
 
 
 void runTimeInfo::SetUp(runTimeInfo::pInfo& pInfo) {
@@ -8,7 +8,8 @@ void runTimeInfo::SetUp(runTimeInfo::pInfo& pInfo) {
     while (true) {
         HWND hgamewindow = FindWindow(NULL, _T("AssaultCube"));
         if (hgamewindow == NULL) {
-            std::cout << "Failed to find window! Retrying in 4 seconds..." << std::endl;
+            
+			Overlay::Instance().AddDebugMessage("Failed to find window! Retrying in 4 seconds...");
             std::this_thread::sleep_for(std::chrono::seconds(4));
             continue;
         }
@@ -18,16 +19,17 @@ void runTimeInfo::SetUp(runTimeInfo::pInfo& pInfo) {
 
         pInfo.pHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pID);
         if (pInfo.pHandle == INVALID_HANDLE_VALUE || pInfo.pHandle == NULL) {
-            std::cout << "Failed to open process! Retrying in 4 seconds..." << std::endl;
+            
+			Overlay::Instance().AddDebugMessage("Failed to open process! Retrying in 4 seconds...");
             std::this_thread::sleep_for(std::chrono::seconds(4));
             continue;
         }
 
-        std::cout << "Process opened successfully." << std::endl;
+		Overlay::Instance().AddDebugMessage("Process opened successfully.");
         pInfo.baseAddress = runTimeInfo::GetModuleBaseAddress(L"ac_client.exe", pID);
 
         if (pInfo.baseAddress == 0) {
-            std::cout << "Failed to retrieve base address! Retrying in 4 seconds..." << std::endl;
+			Overlay::Instance().AddDebugMessage("Failed to get module base address! Retrying in 4 seconds...");
             std::this_thread::sleep_for(std::chrono::seconds(1));
             CloseHandle(pInfo.pHandle);
             continue;
@@ -37,18 +39,15 @@ void runTimeInfo::SetUp(runTimeInfo::pInfo& pInfo) {
 
         SIZE_T bytesRead;
         if (ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pInfo.baseAddress + offsets.width), &pInfo.windowWidth, sizeof(pInfo.windowWidth), &bytesRead)) {
-            std::cout << "Window width: " << pInfo.windowWidth << std::endl;
+           
         }
-        else {
-            std::cout << "Failed to read window width." << std::endl;
-        }
+       
+       
 
         if (ReadProcessMemory(pInfo.pHandle, (LPCVOID)(pInfo.baseAddress + offsets.hight), &pInfo.windowHeight, sizeof(pInfo.windowHeight), &bytesRead)) {
-            std::cout << "Window height: " << pInfo.windowHeight << std::endl;
+            
         }
-        else {
-            std::cout << "Failed to read window height." << std::endl;
-        }
+       
 
         
         return;
