@@ -15,7 +15,7 @@ public:
 
     
    static void drawEsp(runTimeInfo::pInfo& pInfo);
-
+   static void RenderMenu();
 private:
     
     
