@@ -24,9 +24,9 @@ public:
     int32_t kills;          //0x01DC
     char pad_01E0[4];       //0x01E0
     int32_t deaths;         //0x01E4
-    char pad_01E8[28];      //0x01E8
+    char pad_01E8[29];      //0x01E8
     char name[16];          //0x0204
-    char pad_0214[248];     //0x0214
+    char pad_0214[247];     //0x0214
     int32_t teamId;         //0x030C
 
     // Non-struct fields
