@@ -32,10 +32,10 @@ void miscThread(runTimeInfo::pInfo& pInfo) {
 
     auto lastToggleTime = std::chrono::steady_clock::now();
     const std::chrono::milliseconds cooldownTime(100);
-
+   
     while (true) {
-
-       
+        float a = 0;
+		WriteProcessMemory(pInfo.pHandle, (LPVOID)(0x0811B58), &a, sizeof(a), 0);
 
 
         if (GetAsyncKeyState(VK_INSERT) & 0x8000) {
@@ -85,3 +85,6 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
 
     return 0;
 }
+
+
+

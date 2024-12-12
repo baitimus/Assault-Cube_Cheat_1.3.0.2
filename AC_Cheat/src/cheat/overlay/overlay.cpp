@@ -194,8 +194,7 @@ void Overlay::Run(runTimeInfo::pInfo& pInfo)
 
        
         Render(pInfo);
-        
-    }
+     }
 }
 void Overlay::Render(runTimeInfo::pInfo& pInfo)
 {

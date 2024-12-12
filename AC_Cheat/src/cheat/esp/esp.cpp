@@ -11,34 +11,67 @@ Visuals::~Visuals() {
 void Visuals::RenderMenu() {
     Overlay& overlay = Overlay::Instance();
 
+    
+    if (overlay.drawMenu) {
+       
+        ImGuiStyle& style = ImGui::GetStyle();
+        style.WindowRounding = 12.0f;
+        style.FrameRounding = 6.0f;
+        style.Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.05f, 0.05f, 0.9f);
+        style.Colors[ImGuiCol_TitleBg] = ImVec4(0.15f, 0.2f, 0.35f, 1.0f);
+        style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.2f, 0.25f, 0.4f, 1.0f);
+        style.Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.25f, 0.45f, 1.0f);
+        style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.3f, 0.35f, 0.55f, 1.0f);
+        style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.4f, 0.5f, 0.7f, 1.0f);
+        style.Colors[ImGuiCol_CheckMark] = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+        style.Colors[ImGuiCol_Separator] = ImVec4(0.2f, 0.3f, 0.4f, 1.0f);
 
-
-    // Render the cheat menu if the flag is set
-    if (overlay.drawMenu)
-    {
         // Set up the cheat menu window
-        ImGui::SetNextWindowPos(ImVec2(10.0f, 300.0f), ImGuiCond_Always);  
-        ImGui::SetNextWindowSize(ImVec2(200.0f, 100.0f), ImGuiCond_Always);  
-        ImGui::Begin("AC Cheat", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::SetNextWindowPos(ImVec2(30.0f, 150.0f), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(300.0f, 200.0f), ImGuiCond_Always);
+        ImGui::Begin("AssaultCube Cheat Menu", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 
-        
-        ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));  
+        // Title bar styling
+        ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "AssaultCube Cheat Menu");
+        ImGui::Separator();
 
-     
+        // Features Section
         ImGui::Spacing();
+        ImGui::Text("\u25BA Features");
+        ImGui::Separator();
+        ImGui::Spacing();
+
         static bool enableESP = true;
-        ImGui::Checkbox("ESP", &enableESP);
+        static bool enableAimbot = true;
+
+        ImGui::Checkbox("Enable ESP", &enableESP);
+        ImGui::Checkbox("Enable Aimbot", &enableAimbot);
+
+        // Settings Section
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
-        static bool enableAimbot = true;
-        ImGui::Checkbox("Aimbot", &enableAimbot);
+        ImGui::Text("\u25BA Settings");
+        ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::PopStyleColor();
+        static float aimbotSpeed = 1.0f;
+        ImGui::SliderFloat("Aimbot Speed", &aimbotSpeed, 0.1f, 5.0f, "Strength: %.1f");
+
+        static int espColor = 0;
+        const char* espModes[] = { "Red", "Green", "Blue" };
+        ImGui::Combo("ESP Color", &espColor, espModes, IM_ARRAYSIZE(espModes));
+
+        // Footer Section
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "[Insert to toggle menu]");
+
         ImGui::End();
     }
 }
+
+
 void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
     myMath::Vec2 screen;
     entity ent;
