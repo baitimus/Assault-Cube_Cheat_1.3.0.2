@@ -1,5 +1,6 @@
 #include "esp.h"
 #include "../overlay/overlay.h"
+#include "../config.h"
 
 // Constructor and Destructor
 Visuals::Visuals() {}
@@ -9,6 +10,7 @@ Visuals::~Visuals() {}
 // Render the cheat menu using ImGui
 void Visuals::RenderMenu() {
     Overlay& overlay = Overlay::Instance();
+    Config& config = ConfigManager::Instance();
 
     if (overlay.drawMenu) {
         ImGuiStyle& style = ImGui::GetStyle();
@@ -40,11 +42,10 @@ void Visuals::RenderMenu() {
         ImGui::Separator();
         ImGui::Spacing();
 
-        static bool enableESP = true;
-        static bool enableAimbot = true;
+      
 
-        ImGui::Checkbox("Enable ESP", &enableESP);
-        ImGui::Checkbox("Enable Aimbot", &enableAimbot);
+        ImGui::Checkbox("Enable ESP", &config.espEnabled);
+        ImGui::Checkbox("Enable Aimbot", &config.aimbotEnabled);
 
         // Settings Section
         ImGui::Spacing();
@@ -72,6 +73,11 @@ void Visuals::RenderMenu() {
 
 // Draw the ESP (Entity Specific) for each entity
 void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
+
+    Config& config = ConfigManager::Instance();
+	if (config.espEnabled == false) {
+		return;
+	}
     myMath::Vec2 screen;
     entity ent;
     entity localPlayer;

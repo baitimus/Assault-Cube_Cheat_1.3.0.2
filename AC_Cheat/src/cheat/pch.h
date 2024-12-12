@@ -1,4 +1,5 @@
 #pragma once
+
 #include <dwmapi.h>
 #include <iostream>
 #include <Windows.h>
@@ -10,8 +11,4 @@
 #include <string>
 #include <d3d11.h>
 #include <mutex>
-#include <sstream>
-#include <mutex>
-#include <string>
-#include <vector>
 #include <sstream>

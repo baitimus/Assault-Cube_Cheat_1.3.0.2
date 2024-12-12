@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cheat\aim\aimbot.h" />
+    <ClInclude Include="src\cheat\config.h" />
     <ClInclude Include="src\cheat\entity\entity.h" />
     <ClInclude Include="src\cheat\entity\offsets.h" />
     <ClInclude Include="src\cheat\esp\esp.h" />

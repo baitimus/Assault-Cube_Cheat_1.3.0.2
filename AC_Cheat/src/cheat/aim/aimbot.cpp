@@ -1,14 +1,22 @@
 
 #include "aimbot.h"
 #include <cmath> 
-
+#include "../config.h"
 
 namespace aim {
 
     void aimbot(runTimeInfo::pInfo& pInfo) {
+        Config& config = ConfigManager::Instance();
+        if (config.aimbotEnabled == false)
+        {
+
+
+			return;
+        }
         Offsets offsets;
         entity ent;
 		entity localPlayer;
+        
 		ent.readLocalplayer(pInfo, localPlayer);
         
         std::vector<entity> entities = ent.readEntityList(pInfo);

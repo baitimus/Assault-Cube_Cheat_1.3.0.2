@@ -7,7 +7,7 @@
 #include "../../cheat/pch.h"
 #include "../../cheat/winapi.h"
 #include "../../cheat/esp/esp.h"
-
+#include "../config.h"
 
 
 class Overlay {
