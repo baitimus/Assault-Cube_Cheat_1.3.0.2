@@ -26,28 +26,28 @@ void aimbotThread(runTimeInfo::pInfo& pInfo) {
     }
 }
 void miscThread(runTimeInfo::pInfo& pInfo) {
-  
     Overlay& overlay = Overlay::Instance();
-
-
     auto lastToggleTime = std::chrono::steady_clock::now();
     const std::chrono::milliseconds cooldownTime(100);
-   
+
     while (true) {
         float a = 0;
-		WriteProcessMemory(pInfo.pHandle, (LPVOID)(0x0811B58), &a, sizeof(a), 0);
-
+        WriteProcessMemory(pInfo.pHandle, (LPVOID)(0x0811B58), &a, sizeof(a), 0);
 
         if (GetAsyncKeyState(VK_INSERT) & 0x8000) {
             auto currentTime = std::chrono::steady_clock::now();
             if (currentTime - lastToggleTime >= cooldownTime) {
                 overlay.drawMenu = !overlay.drawMenu;
                 lastToggleTime = currentTime;
-               
+                overlay.ToggleInput();
+                if (overlay.IsInputEnabled())
+                {
+					overlay.AddDebugMessage("Input enabled");
+
+                }
+                overlay.AddDebugMessage(overlay.drawMenu ? "Menu opened" : "Menu closed");
             }
         }
-
-
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }

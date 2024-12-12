@@ -30,13 +30,16 @@ public:
         oss << value;
         AddDebugMessage(oss.str());
     }
-    bool drawMenu = true;
+    bool drawMenu = false;
+
+    void ToggleInput(); // Add this new method
+    bool IsInputEnabled() const; // Add getter for input state
 
 private:
     //  constructor and destructor
     Overlay();
     ~Overlay();
-
+    bool m_InputEnabled = true;
     // Disable copy and assignment
     Overlay(const Overlay&) = delete;
     Overlay& operator=(const Overlay&) = delete;

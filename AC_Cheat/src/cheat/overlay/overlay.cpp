@@ -1,7 +1,7 @@
 #include "overlay.h"
 
 
-
+#define WM_TOGGLE_INPUT (WM_USER + 1)
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WindowProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -11,6 +11,20 @@ LRESULT CALLBACK WindowProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam)
 
     switch (msg)
     {
+    case WM_TOGGLE_INPUT:
+    {
+        LONG_PTR style = GetWindowLongPtr(window, GWL_EXSTYLE);
+        if (style & WS_EX_TRANSPARENT) {
+            style &= ~WS_EX_TRANSPARENT;
+        }
+        else {
+            style |= WS_EX_TRANSPARENT;
+        }
+        SetWindowLongPtr(window, GWL_EXSTYLE, style);
+        SetWindowPos(window, nullptr, 0, 0, 0, 0,
+            SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+        return 0;
+    }
     case WM_SYSCOMMAND:
         if ((wParam & 0xfff0) == SC_KEYMENU)
             return 0;
@@ -31,11 +45,14 @@ Overlay& Overlay::Instance() {
 }
 
 Overlay::Overlay()
+
     : m_Overlay(nullptr), m_Device(nullptr), m_DeviceContext(nullptr),
-    m_SwapChain(nullptr), m_RenderTargetView(nullptr), m_Running(false) {
+    m_SwapChain(nullptr), m_RenderTargetView(nullptr), m_Running(false),
+    m_InputEnabled(false) { // Initialize m_InputEnabled
     m_DisplayWidth = GetSystemMetrics(SM_CXSCREEN);
     m_DisplayHeight = GetSystemMetrics(SM_CYSCREEN);
 }
+
 
 Overlay::~Overlay() {
     Shutdown();
@@ -279,3 +296,13 @@ template void Overlay::AddDebugMessage<float>(const float& value);
 template void Overlay::AddDebugMessage<double>(const double& value);
 template void Overlay::AddDebugMessage<std::string>(const std::string& value);
 
+void Overlay::ToggleInput() {
+    m_InputEnabled = !m_InputEnabled;
+    if (m_Overlay) {
+        PostMessage(m_Overlay, WM_TOGGLE_INPUT, 0, 0);
+    }
+}
+
+bool Overlay::IsInputEnabled() const {
+    return m_InputEnabled;
+}

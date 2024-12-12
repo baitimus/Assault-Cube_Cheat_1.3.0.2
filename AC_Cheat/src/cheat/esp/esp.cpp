@@ -8,6 +8,7 @@ Visuals::Visuals() {
 Visuals::~Visuals() {
     
 }
+
 void Visuals::RenderMenu() {
     Overlay& overlay = Overlay::Instance();
 
@@ -70,8 +71,6 @@ void Visuals::RenderMenu() {
         ImGui::End();
     }
 }
-
-
 void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
     myMath::Vec2 screen;
     entity ent;
@@ -100,7 +99,7 @@ void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
         int w = static_cast<int>(35 * scaleFactor);
         int h = static_cast<int>(75 * scaleFactor);
 
-        // Transform entity position to screen coordinates
+      
         if (myMath::WorldToScreen(entity, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight)) {
 
             float headOffset = h * 0.09f;
@@ -109,7 +108,7 @@ void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
             int green = static_cast<int>(255 * entity.entHealth / 100.0f);
             ImU32 healthColor = IM_COL32(red, green, 0, 255);
 
-            // Display health text above the box
+            
             std::string healthText = std::to_string(entity.entHealth) + "HP";
             ImGui::GetBackgroundDrawList()->AddText(
                 ImVec2(screen.x - ImGui::CalcTextSize(healthText.c_str()).x / 2, screen.y - headOffset - 15),
@@ -125,11 +124,11 @@ void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
                 distanceText.c_str()
             );
 
-            // Display entity name above the box
-            std::string entityName = entity.name;  // Assuming entity.name holds the name of the entity
+            
+            std::string entityName = entity.name; 
             ImGui::GetBackgroundDrawList()->AddText(
                 ImVec2(screen.x - ImGui::CalcTextSize(entityName.c_str()).x / 2, screen.y - headOffset - 30),
-                IM_COL32(255, 255, 255, 255),  // White color for the name
+                IM_COL32(255, 255, 255, 255),  
                 entityName.c_str()
             );
 
