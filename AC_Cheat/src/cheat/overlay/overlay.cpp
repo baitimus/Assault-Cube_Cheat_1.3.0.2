@@ -1,33 +1,27 @@
 #include "overlay.h"
 
-
+// Window message definitions
 #define WM_TOGGLE_INPUT (WM_USER + 1)
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-LRESULT CALLBACK WindowProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+// Window procedure implementation
+LRESULT CALLBACK WindowProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam) {
     if (ImGui_ImplWin32_WndProcHandler(window, msg, wParam, lParam))
         return true;
 
-    switch (msg)
-    {
-    case WM_TOGGLE_INPUT:
-    {
+    switch (msg) {
+    case WM_TOGGLE_INPUT: {
         LONG_PTR style = GetWindowLongPtr(window, GWL_EXSTYLE);
-        if (style & WS_EX_TRANSPARENT) {
-            style &= ~WS_EX_TRANSPARENT;
-        }
-        else {
-            style |= WS_EX_TRANSPARENT;
-        }
+        style = (style & WS_EX_TRANSPARENT) ?
+            (style & ~WS_EX_TRANSPARENT) :
+            (style | WS_EX_TRANSPARENT);
         SetWindowLongPtr(window, GWL_EXSTYLE, style);
         SetWindowPos(window, nullptr, 0, 0, 0, 0,
             SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
         return 0;
     }
     case WM_SYSCOMMAND:
-        if ((wParam & 0xfff0) == SC_KEYMENU)
-            return 0;
+        if ((wParam & 0xfff0) == SC_KEYMENU) return 0;
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -35,43 +29,37 @@ LRESULT CALLBACK WindowProc(HWND window, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_CLOSE:
         return 0;
     }
-
     return DefWindowProc(window, msg, wParam, lParam);
 }
 
+// Singleton implementation
 Overlay& Overlay::Instance() {
-    static Overlay instance; 
+    static Overlay instance;
     return instance;
 }
 
+// Constructor/Destructor
 Overlay::Overlay()
-
-    : m_Overlay(nullptr), m_Device(nullptr), m_DeviceContext(nullptr),
-    m_SwapChain(nullptr), m_RenderTargetView(nullptr), m_Running(false),
-    m_InputEnabled(false) { // Initialize m_InputEnabled
+    : m_Overlay(nullptr)
+    , m_Device(nullptr)
+    , m_DeviceContext(nullptr)
+    , m_SwapChain(nullptr)
+    , m_RenderTargetView(nullptr)
+    , m_Running(false)
+    , m_InputEnabled(false) {
     m_DisplayWidth = GetSystemMetrics(SM_CXSCREEN);
     m_DisplayHeight = GetSystemMetrics(SM_CYSCREEN);
 }
-
 
 Overlay::~Overlay() {
     Shutdown();
 }
 
-void Overlay::AddDebugMessage(const std::string& message) {
-    std::lock_guard<std::mutex> lock(m_DebugMutex); // Thread-safe access
-    m_DebugLog.push_back(message);
-}
+// Core initialization
+bool Overlay::Initialize(HINSTANCE instance) {
+    if (!InitializeWindow(instance)) return false;
+    if (!InitializeDirectX()) return false;
 
-bool Overlay::Initialize(HINSTANCE instance)
-{
-    if (!InitializeWindow(instance))
-        return false;
-
-    if (!InitializeDirectX())
-        return false;
-
-    // Initialize ImGui
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
     ImGui_ImplWin32_Init(m_Overlay);
@@ -79,8 +67,8 @@ bool Overlay::Initialize(HINSTANCE instance)
 
     return true;
 }
-bool Overlay::InitializeWindow(HINSTANCE instance)
-{
+
+bool Overlay::InitializeWindow(HINSTANCE instance) {
     m_WindowClass = {};
     m_WindowClass.cbSize = sizeof(WNDCLASSEXW);
     m_WindowClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -95,23 +83,16 @@ bool Overlay::InitializeWindow(HINSTANCE instance)
         m_WindowClass.lpszClassName,
         L"AC_Cheat",
         WS_POPUP,
-        0, 0,
-        m_DisplayWidth, m_DisplayHeight,
-        nullptr,
-        nullptr,
-        m_WindowClass.hInstance,
-        nullptr
+        0, 0, m_DisplayWidth, m_DisplayHeight,
+        nullptr, nullptr, m_WindowClass.hInstance, nullptr
     );
 
-    if (!m_Overlay)
-        return false;
+    if (!m_Overlay) return false;
 
     SetLayeredWindowAttributes(m_Overlay, RGB(0, 0, 0), BYTE(255), LWA_ALPHA);
 
-    // Set up margins
-    RECT clientArea;
+    RECT clientArea, windowArea;
     GetClientRect(m_Overlay, &clientArea);
-    RECT windowArea;
     GetWindowRect(m_Overlay, &windowArea);
     POINT diff{};
     ClientToScreen(m_Overlay, &diff);
@@ -124,14 +105,13 @@ bool Overlay::InitializeWindow(HINSTANCE instance)
     };
 
     DwmExtendFrameIntoClientArea(m_Overlay, &margins);
-
     return true;
 }
-bool Overlay::InitializeDirectX()
-{
+
+// DirectX initialization and management
+bool Overlay::InitializeDirectX() {
     DXGI_SWAP_CHAIN_DESC scd = {};
-    scd.BufferDesc.RefreshRate.Numerator = 60;
-    scd.BufferDesc.RefreshRate.Denominator = 1;
+    scd.BufferDesc.RefreshRate = { 60, 1 };
     scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     scd.SampleDesc.Count = 1;
     scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -147,93 +127,61 @@ bool Overlay::InitializeDirectX()
     };
 
     D3D_FEATURE_LEVEL level;
-
     HRESULT hr = D3D11CreateDeviceAndSwapChain(
-        nullptr,
-        D3D_DRIVER_TYPE_HARDWARE,
-        nullptr,
-        0,
-        levels,
-        2,
-        D3D11_SDK_VERSION,
-        &scd,
-        &m_SwapChain,
-        &m_Device,
-        &level,
-        &m_DeviceContext
+        nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
+        levels, 2, D3D11_SDK_VERSION, &scd,
+        &m_SwapChain, &m_Device, &level, &m_DeviceContext
     );
 
-    if (FAILED(hr))
-        return false;
-
-    return CreateRenderTarget();
+    return SUCCEEDED(hr) && CreateRenderTarget();
 }
 
-bool Overlay::CreateRenderTarget()
-{
+bool Overlay::CreateRenderTarget() {
     ID3D11Texture2D* backBuffer = nullptr;
     if (FAILED(m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer))))
         return false;
 
     HRESULT hr = m_Device->CreateRenderTargetView(backBuffer, nullptr, &m_RenderTargetView);
     backBuffer->Release();
-
     return SUCCEEDED(hr);
 }
 
-void Overlay::Run(runTimeInfo::pInfo& pInfo)
-{
+// Main loop and rendering
+void Overlay::Run(runTimeInfo::pInfo& pInfo) {
     ShowWindow(m_Overlay, SW_SHOW);
     UpdateWindow(m_Overlay);
-
     m_Running = true;
 
-    while (m_Running)
-    {
-
+    while (m_Running) {
         MSG msg;
-        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-        {
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-
-            if (msg.message == WM_QUIT)
-            {
+            if (msg.message == WM_QUIT) {
                 m_Running = false;
                 break;
             }
         }
-
-        if (!m_Running)
-            break;
-
-
-
-       
+        if (!m_Running) break;
         Render(pInfo);
-     }
+    }
 }
-void Overlay::Render(runTimeInfo::pInfo& pInfo)
-{
-    Overlay& overlay = Overlay::Instance();
+
+void Overlay::Render(runTimeInfo::pInfo& pInfo) {
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Always);  // Position it at the top left
-    ImGui::SetNextWindowSize(ImVec2(300.0f, 200.0f), ImGuiCond_Always);  // Fixed size for the debug window
+    ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(300.0f, 200.0f), ImGuiCond_Always);
     ImGui::Begin("Debug Window", nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_AlwaysAutoResize);
 
-    // Display each debug message
     for (const auto& msg : m_DebugLog) {
         ImGui::Text("%s", msg.c_str());
     }
-
     ImGui::End();
 
-    
-  
-	Visuals::RenderMenu();
+    Visuals::RenderMenu();
     Visuals::drawEsp(pInfo);
 
     ImGui::Render();
@@ -245,31 +193,26 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo)
     m_SwapChain->Present(0, 0);
 }
 
-void Overlay::CleanupRenderTarget()
-{
-    if (m_RenderTargetView)
-    {
+// Cleanup and shutdown
+void Overlay::CleanupRenderTarget() {
+    if (m_RenderTargetView) {
         m_RenderTargetView->Release();
         m_RenderTargetView = nullptr;
     }
 }
 
-void Overlay::Shutdown()
-{
+void Overlay::Shutdown() {
     CleanupRenderTarget();
 
-    if (m_SwapChain)
-    {
+    if (m_SwapChain) {
         m_SwapChain->Release();
         m_SwapChain = nullptr;
     }
-    if (m_DeviceContext)
-    {
+    if (m_DeviceContext) {
         m_DeviceContext->Release();
         m_DeviceContext = nullptr;
     }
-    if (m_Device)
-    {
+    if (m_Device) {
         m_Device->Release();
         m_Device = nullptr;
     }
@@ -278,8 +221,7 @@ void Overlay::Shutdown()
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
-    if (m_Overlay)
-    {
+    if (m_Overlay) {
         DestroyWindow(m_Overlay);
         m_Overlay = nullptr;
     }
@@ -287,10 +229,12 @@ void Overlay::Shutdown()
     UnregisterClassW(m_WindowClass.lpszClassName, m_WindowClass.hInstance);
 }
 
+// Debug and utility methods
+void Overlay::AddDebugMessage(const std::string& message) {
+    std::lock_guard<std::mutex> lock(m_DebugMutex);
+    m_DebugLog.push_back(message);
+}
 
-
-
-// Explicit template instantiations for common types
 template void Overlay::AddDebugMessage<int>(const int& value);
 template void Overlay::AddDebugMessage<float>(const float& value);
 template void Overlay::AddDebugMessage<double>(const double& value);

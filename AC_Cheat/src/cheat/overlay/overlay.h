@@ -1,66 +1,67 @@
 #pragma once
 
+// External dependencies
 #include "../../imgui/imgui.h"
 #include "../../imgui/imgui_impl_dx11.h"
 #include "../../imgui/imgui_impl_win32.h"
 #include "../../cheat/pch.h"
 #include "../../cheat/winapi.h"
 #include "../../cheat/esp/esp.h"
-#include <mutex>
-#include <string>
-#include <vector>
-#include <sstream>
+
+
 
 class Overlay {
 public:
-    // Singleton access
+    // Singleton interface
     static Overlay& Instance();
 
-    // Public methods
+    // Core functionality
     bool Initialize(HINSTANCE instance);
     void Run(runTimeInfo::pInfo& pInfo);
     void Shutdown();
 
-    // Debug logging
+    // Debug interface
     void AddDebugMessage(const std::string& message);
-
     template<typename T>
     void AddDebugMessage(const T& value) {
         std::ostringstream oss;
         oss << value;
         AddDebugMessage(oss.str());
     }
-    bool drawMenu = false;
 
-    void ToggleInput(); // Add this new method
-    bool IsInputEnabled() const; // Add getter for input state
+    // State management
+    bool drawMenu = false;
+    void ToggleInput();
+    bool IsInputEnabled() const;
 
 private:
-    //  constructor and destructor
+    // Singleton implementation
     Overlay();
     ~Overlay();
-    bool m_InputEnabled = true;
-    // Disable copy and assignment
     Overlay(const Overlay&) = delete;
     Overlay& operator=(const Overlay&) = delete;
 
-    
+    // State variables
+    bool m_InputEnabled = true;
+    bool m_Running;
+
+    // Window handling
     HWND m_Overlay;
     WNDCLASSEXW m_WindowClass;
     int m_DisplayWidth;
     int m_DisplayHeight;
 
+    // DirectX resources
     ID3D11Device* m_Device;
     ID3D11DeviceContext* m_DeviceContext;
     IDXGISwapChain* m_SwapChain;
     ID3D11RenderTargetView* m_RenderTargetView;
 
-    bool m_Running;
+    // Debug logging
     std::vector<std::string> m_DebugLog;
     std::mutex m_DebugMutex;
-    
 
-    // Helper methods
+    // Internal helpers
     bool InitializeWindow(HINSTANCE instance);
     bool InitializeDirectX();
     bool CreateRenderTarget();

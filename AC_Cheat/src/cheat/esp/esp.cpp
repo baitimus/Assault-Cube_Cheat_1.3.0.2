@@ -1,21 +1,19 @@
 #include "esp.h"
 #include "../overlay/overlay.h"
 
-Visuals::Visuals() {
-    
-}
+// Constructor and Destructor
+Visuals::Visuals() {}
 
-Visuals::~Visuals() {
-    
-}
+Visuals::~Visuals() {}
 
+// Render the cheat menu using ImGui
 void Visuals::RenderMenu() {
     Overlay& overlay = Overlay::Instance();
 
-    
     if (overlay.drawMenu) {
-       
         ImGuiStyle& style = ImGui::GetStyle();
+
+        // Customize ImGui window styles
         style.WindowRounding = 12.0f;
         style.FrameRounding = 6.0f;
         style.Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.05f, 0.05f, 0.9f);
@@ -32,7 +30,7 @@ void Visuals::RenderMenu() {
         ImGui::SetNextWindowSize(ImVec2(300.0f, 200.0f), ImGuiCond_Always);
         ImGui::Begin("AssaultCube Cheat Menu", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 
-        // Title bar styling
+        // Menu title and separator
         ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "AssaultCube Cheat Menu");
         ImGui::Separator();
 
@@ -71,44 +69,50 @@ void Visuals::RenderMenu() {
         ImGui::End();
     }
 }
+
+// Draw the ESP (Entity Specific) for each entity
 void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
     myMath::Vec2 screen;
     entity ent;
     entity localPlayer;
     Offsets offsets;
 
+    // Retrieve entity and player data
     std::vector<entity> entities = ent.readEntityList(pInfo);
     ent.readLocalplayer(pInfo, localPlayer);
 
     int gameMode;
     ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.gameMode), &gameMode, sizeof(gameMode), NULL);
 
+    // Iterate through each entity
     for (auto& entity : entities) {
         if (entity.entHealth <= 0) {
-            continue;
+            continue; // Skip dead entities
         }
 
+        // Read the view matrix to transform 3D coordinates to 2D screen space
         ReadProcessMemory(pInfo.pHandle, (LPCVOID)(offsets.viewMatrix + pInfo.baseAddress), &ent.viewMatrix, sizeof(ent.viewMatrix), NULL);
 
+        // Calculate the distance between the local player and the entity
         float distance = sqrtf(powf(localPlayer.headX - entity.headX, 2) +
             powf(localPlayer.headY - entity.headY, 2) +
             powf(localPlayer.headZ - entity.headZ, 2));
 
-        // Scale box size based on distance
+        // Scale the ESP box based on the distance
         float scaleFactor = 44.0f / (distance + 0.09f);
         int w = static_cast<int>(35 * scaleFactor);
         int h = static_cast<int>(75 * scaleFactor);
 
-      
+        // Transform entity position to screen coordinates
         if (myMath::WorldToScreen(entity, &screen, ent.viewMatrix, pInfo.windowWidth, pInfo.windowHeight)) {
-
             float headOffset = h * 0.09f;
 
+            // Color health bar based on health value
             int red = static_cast<int>(255 * (100 - entity.entHealth) / 100.0f);
             int green = static_cast<int>(255 * entity.entHealth / 100.0f);
             ImU32 healthColor = IM_COL32(red, green, 0, 255);
 
-            
+            // Display health above the box
             std::string healthText = std::to_string(entity.entHealth) + "HP";
             ImGui::GetBackgroundDrawList()->AddText(
                 ImVec2(screen.x - ImGui::CalcTextSize(healthText.c_str()).x / 2, screen.y - headOffset - 15),
@@ -116,7 +120,7 @@ void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
                 healthText.c_str()
             );
 
-            // Display distance text
+            // Display distance below the box
             std::string distanceText = std::to_string(static_cast<int>(distance)) + "m";
             ImGui::GetBackgroundDrawList()->AddText(
                 ImVec2(screen.x - ImGui::CalcTextSize(distanceText.c_str()).x / 2, screen.y + h - 5),
@@ -124,16 +128,17 @@ void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
                 distanceText.c_str()
             );
 
-            
-            std::string entityName = entity.name; 
+            // Display entity name above the health
+            std::string entityName = entity.name;
             ImGui::GetBackgroundDrawList()->AddText(
                 ImVec2(screen.x - ImGui::CalcTextSize(entityName.c_str()).x / 2, screen.y - headOffset - 30),
-                IM_COL32(255, 255, 255, 255),  
+                IM_COL32(255, 255, 255, 255),
                 entityName.c_str()
             );
 
-            // Draw the ESP box based on team affiliation
+            // Draw the ESP box with appropriate color based on team affiliation
             if (gameMode == 8) {
+                // Red for enemies
                 ImGui::GetBackgroundDrawList()->AddRect(
                     ImVec2(screen.x - w / 2, screen.y - headOffset),
                     ImVec2(screen.x + w / 2, screen.y + h - headOffset),
@@ -161,5 +166,3 @@ void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
         }
     }
 }
-
-
