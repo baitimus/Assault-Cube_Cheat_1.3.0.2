@@ -28,8 +28,8 @@ void Visuals::RenderMenu() {
         style.Colors[ImGuiCol_Separator] = ImVec4(0.2f, 0.3f, 0.4f, 1.0f);
 
         // Set up the cheat menu window
-        ImGui::SetNextWindowPos(ImVec2(30.0f, 150.0f), ImGuiCond_Always);
-        ImGui::SetNextWindowSize(ImVec2(300.0f, 200.0f), ImGuiCond_Always);
+        ImGui::SetNextWindowPos(ImVec2(15.0f, 350.0f), ImGuiCond_Always);
+        ImGui::SetNextWindowSize(ImVec2(500.0f, 350.0f), ImGuiCond_Always);
         ImGui::Begin("AssaultCube Cheat Menu", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 
         // Menu title and separator

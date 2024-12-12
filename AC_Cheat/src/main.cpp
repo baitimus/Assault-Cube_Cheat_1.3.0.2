@@ -38,9 +38,9 @@ void miscThread(runTimeInfo::pInfo& pInfo) {
                 overlay.ToggleInput();
 
                 if (overlay.IsInputEnabled()) {
-                    overlay.AddDebugMessage("Input enabled");
+                    //overlay.AddDebugMessage("Input enabled");
                 }
-                overlay.AddDebugMessage(overlay.drawMenu ? "Menu opened" : "Menu closed");
+                //overlay.AddDebugMessage(overlay.drawMenu ? "Menu opened" : "Menu closed");
             }
         }
 
