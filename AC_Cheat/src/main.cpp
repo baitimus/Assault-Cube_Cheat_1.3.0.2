@@ -26,9 +26,8 @@ void miscThread(runTimeInfo::pInfo& pInfo) {
     const std::chrono::milliseconds cooldownTime(100);
 
     while (true) {
-        // Reset memory value
-        float a = 0;
-        WriteProcessMemory(pInfo.pHandle, (LPVOID)(0x0811B58), &a, sizeof(a), 0);
+        
+        
 
         // Handle menu toggle with cooldown
         if (GetAsyncKeyState(VK_INSERT) & 0x8000) {
