@@ -68,3 +68,5 @@ private:
     void CleanupRenderTarget();
     void Render(runTimeInfo::pInfo& pInfo);
 };
+
+

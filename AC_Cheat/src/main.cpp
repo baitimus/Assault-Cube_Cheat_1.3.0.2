@@ -4,6 +4,23 @@
 #include "cheat/entity/entity.h"
 #include "cheat/overlay/overlay.h"
 
+void HandleMenuToggle(Overlay& overlay, std::chrono::steady_clock::time_point& lastToggleTime, const std::chrono::milliseconds& cooldownTime) {
+    if (GetAsyncKeyState(VK_INSERT) & 0x8000) {  // Check if the INSERT key is pressed
+        auto currentTime = std::chrono::steady_clock::now();
+        if (currentTime - lastToggleTime >= cooldownTime) {  // Check if cooldown has passed
+            overlay.drawMenu = !overlay.drawMenu;  // Toggle menu visibility
+            lastToggleTime = currentTime;  // Update the last toggle time
+            overlay.ToggleInput();  // Toggle input for the overlay
+
+            // Optional debug messages
+            // if (overlay.IsInputEnabled()) {
+            //     overlay.AddDebugMessage("Input enabled");
+            // }
+            // overlay.AddDebugMessage(overlay.drawMenu ? "Menu opened" : "Menu closed");
+        }
+    }
+}
+
 // Global state
 runTimeInfo::pInfo pInfo;
 entity ent;
@@ -23,28 +40,12 @@ void aimbotThread(runTimeInfo::pInfo& pInfo) {
 void miscThread(runTimeInfo::pInfo& pInfo) {
     Overlay& overlay = Overlay::Instance();
     auto lastToggleTime = std::chrono::steady_clock::now();
-    const std::chrono::milliseconds cooldownTime(100);
+    const std::chrono::milliseconds cooldownTime(100);  // 100 ms cooldown
 
     while (true) {
-        
-        
+        HandleMenuToggle(overlay, lastToggleTime, cooldownTime);  // Handle the menu toggle with cooldown
 
-        // Handle menu toggle with cooldown
-        if (GetAsyncKeyState(VK_INSERT) & 0x8000) {
-            auto currentTime = std::chrono::steady_clock::now();
-            if (currentTime - lastToggleTime >= cooldownTime) {
-                overlay.drawMenu = !overlay.drawMenu;
-                lastToggleTime = currentTime;
-                overlay.ToggleInput();
-
-                if (overlay.IsInputEnabled()) {
-                    //overlay.AddDebugMessage("Input enabled");
-                }
-                //overlay.AddDebugMessage(overlay.drawMenu ? "Menu opened" : "Menu closed");
-            }
-        }
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));  // Sleep for a short time to reduce CPU usage
     }
 }
 
@@ -72,3 +73,6 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
     overlayThreadInstance.join();
     return 0;
 }
+
+
+
