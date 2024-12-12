@@ -12,6 +12,22 @@ void HandleMenuToggle(Overlay& overlay, std::chrono::steady_clock::time_point& l
             lastToggleTime = currentTime;  // Update the last toggle time
             overlay.ToggleInput();  // Toggle input for the overlay
 
+
+
+			Sleep(25);
+            // Simulate a right-click
+            INPUT inputs[2] = {};
+            // Right mouse button down
+            inputs[0].type = INPUT_MOUSE;
+            inputs[0].mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
+
+            // Right mouse button up
+            inputs[1].type = INPUT_MOUSE;
+            inputs[1].mi.dwFlags = MOUSEEVENTF_RIGHTUP;
+
+            // Send the input events
+            SendInput(2, inputs, sizeof(INPUT));
+
             // Optional debug messages
             // if (overlay.IsInputEnabled()) {
             //     overlay.AddDebugMessage("Input enabled");
@@ -20,6 +36,7 @@ void HandleMenuToggle(Overlay& overlay, std::chrono::steady_clock::time_point& l
         }
     }
 }
+
 
 // Global state
 runTimeInfo::pInfo pInfo;
