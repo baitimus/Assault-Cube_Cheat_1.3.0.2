@@ -27,6 +27,8 @@ This project is ongoing, with the current focus on **stability** and **functiona
    ```bash
    git clone https://github.com/baitimus/Assault-Cube_Cheat_1.3.0.2
 
+## How To use Notes: 
+If you ever get stuck when opening menu press the right mouse button and your good to go :)
 ![Screenshot 2024-12-09 141429](https://github.com/user-attachments/assets/23186560-b15e-4455-aa08-572edff4c835)
 
 
