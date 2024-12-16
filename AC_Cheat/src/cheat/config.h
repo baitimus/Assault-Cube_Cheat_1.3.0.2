@@ -4,10 +4,10 @@
 
 struct Config {
     static Config& Instance();
-    bool espEnabled = true;    // Default value can be true or false
-    bool aimbotEnabled = true; // Default value can be true or false
-
-    // You can add other settings here as needed
+    bool espEnabled = true;    
+    bool aimbotEnabled = true; 
+    bool cheatRunning = true;
+    
 };
 
 class ConfigManager {
