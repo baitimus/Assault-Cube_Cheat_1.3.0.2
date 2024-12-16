@@ -36,7 +36,7 @@ void HandleMenuToggle(Overlay& overlay, std::chrono::steady_clock::time_point& l
         }
     }
 }
-
+Config& config = ConfigManager::Instance();
 
 // Global state
 runTimeInfo::pInfo pInfo;
@@ -47,7 +47,7 @@ void aimbotThread(runTimeInfo::pInfo& pInfo) {
     runTimeInfo::SetUp(pInfo);
     Overlay& overlay = Overlay::Instance();
 
-    while (true) {
+    while (config.cheatRunning) {
         if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
             aim::aimbot(pInfo);
         }
@@ -59,7 +59,7 @@ void miscThread(runTimeInfo::pInfo& pInfo) {
     auto lastToggleTime = std::chrono::steady_clock::now();
     const std::chrono::milliseconds cooldownTime(100);  // 100 ms cooldown
 
-    while (true) {
+    while (config.cheatRunning) {
         HandleMenuToggle(overlay, lastToggleTime, cooldownTime);  // Handle the menu toggle with cooldown
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));  // Sleep for a short time to reduce CPU usage
@@ -86,7 +86,17 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
     std::thread overlayThreadInstance(overlayThread, instance, std::ref(pInfo));
 
 
+    while (config.cheatRunning)
+    {
+        if (GetAsyncKeyState('X') & 0x8000) { // Check if X is pressed
+            config.cheatRunning = false;
+            break; // Exit the loop
+        }
 
+
+
+
+    }
 
 
 

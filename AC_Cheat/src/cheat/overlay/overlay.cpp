@@ -151,8 +151,13 @@ void Overlay::Run(runTimeInfo::pInfo& pInfo) {
     ShowWindow(m_Overlay, SW_SHOW);
     UpdateWindow(m_Overlay);
     m_Running = true;
+    Config& config = ConfigManager::Instance();
+    while (config.cheatRunning)
+    {
 
-    while (m_Running) {
+
+    
+    
         MSG msg;
         while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);
@@ -164,6 +169,7 @@ void Overlay::Run(runTimeInfo::pInfo& pInfo) {
         }
         if (!m_Running) break;
         Render(pInfo);
+        
     }
 }
 
@@ -176,7 +182,8 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo) {
     ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(300.0f, 200.0f), ImGuiCond_Always);
     ImGui::Begin("Debug Window", nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_AlwaysAutoResize);
-
+    
+    
     for (const auto& msg : m_DebugLog) {
         ImGui::Text("%s", msg.c_str());
     }
