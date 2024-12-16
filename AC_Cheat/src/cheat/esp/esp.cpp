@@ -127,7 +127,7 @@ void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
             );
 
             // Display distance below the box
-            std::string distanceText = std::to_string(static_cast<int>(distance)) + "m";
+            std::string distanceText = std::to_string(static_cast<int>(distance/3)) + "m";
             ImGui::GetBackgroundDrawList()->AddText(
                 ImVec2(screen.x - ImGui::CalcTextSize(distanceText.c_str()).x / 2, screen.y + h - 5),
                 IM_COL32(255, 255, 255, 255),

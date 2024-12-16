@@ -85,9 +85,15 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
     std::thread miscThreadInstance(miscThread, std::ref(pInfo));
     std::thread overlayThreadInstance(overlayThread, instance, std::ref(pInfo));
 
+
+
+
+
+
     // Wait for critical threads to finish
     aimbotThreadInstance.join();
     overlayThreadInstance.join();
+	miscThreadInstance.join();
     return 0;
 }
 
