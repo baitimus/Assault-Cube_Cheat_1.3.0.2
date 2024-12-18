@@ -55,8 +55,7 @@ void Visuals::RenderMenu() {
         ImGui::Separator();
         ImGui::Spacing();
 
-        static float aimbotSpeed = 1.0f;
-        ImGui::SliderFloat("Aimbot Speed", &aimbotSpeed, 0.1f, 5.0f, "Strength: %.1f");
+       
 
         static int espColor = 0;
         const char* espModes[] = { "Red", "Green", "Blue" };
@@ -65,7 +64,7 @@ void Visuals::RenderMenu() {
         // Footer Section
         ImGui::Spacing();
         ImGui::Separator();
-        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "[Insert to toggle menu]");
+        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "[press X to close the cheat");
 
         ImGui::End();
     }
