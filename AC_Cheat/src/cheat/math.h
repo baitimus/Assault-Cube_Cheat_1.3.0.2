@@ -8,6 +8,8 @@ namespace myMath {
         float x, y, z;
     };
 
+    
+
     struct Vec2 {
         float x, y;
     };
