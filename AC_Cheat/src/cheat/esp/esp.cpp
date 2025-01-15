@@ -47,7 +47,9 @@ void Visuals::RenderMenu() {
         ImGui::Checkbox("Enable ESP", &config.espEnabled);
         ImGui::Checkbox("Enable Aimbot", &config.aimbotEnabled);
 		ImGui::Checkbox("Enable FOV", &config.fovEnabled);
-		ImGui::SliderInt("FOV Size", &config.fovAimbotSize, 25, 150);
+        if (config.fovEnabled) {
+            ImGui::SliderInt("FOV Size", &config.fovAimbotSize, 25, 800);
+        }
         // Settings Section
         ImGui::Spacing();
         ImGui::Separator();
@@ -89,7 +91,7 @@ void Visuals::drawFov()
     float radius = static_cast<float>(config.fovAimbotSize);
 
     // Set the circle color
-    ImU32 circleColor = IM_COL32(255, 255, 0, 255); // Yellow
+    ImU32 circleColor = IM_COL32(255, 255, 255, 255); // Yellow
 
     // Draw the FOV circle
     drawList->AddCircle(
@@ -97,7 +99,7 @@ void Visuals::drawFov()
         radius,         // Radius of the circle
         circleColor,    // Color of the circle
         128,             // Smoothness (number of segments)
-        1.0f            // Thickness
+        0.5f            // Thickness
     );
 }
 
