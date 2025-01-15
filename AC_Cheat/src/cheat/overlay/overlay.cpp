@@ -191,7 +191,7 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo) {
 
     Visuals::RenderMenu();
     Visuals::drawEsp(pInfo);
-
+	Visuals::drawFov();
     ImGui::Render();
 
     const float clear_color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };

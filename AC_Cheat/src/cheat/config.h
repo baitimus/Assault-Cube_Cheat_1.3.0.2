@@ -7,7 +7,9 @@ struct Config {
     bool espEnabled = true;    
     bool aimbotEnabled = true; 
     bool cheatRunning = true;
-    
+	bool fovEnabled = true;
+    int fovAimbotSize = 25;
+
 };
 
 class ConfigManager {

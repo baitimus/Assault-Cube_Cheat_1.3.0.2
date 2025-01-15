@@ -46,7 +46,8 @@ void Visuals::RenderMenu() {
 
         ImGui::Checkbox("Enable ESP", &config.espEnabled);
         ImGui::Checkbox("Enable Aimbot", &config.aimbotEnabled);
-
+		ImGui::Checkbox("Enable FOV", &config.fovEnabled);
+		ImGui::SliderInt("FOV Size", &config.fovAimbotSize, 25, 150);
         // Settings Section
         ImGui::Spacing();
         ImGui::Separator();
@@ -69,6 +70,38 @@ void Visuals::RenderMenu() {
         ImGui::End();
     }
 }
+void Visuals::drawFov()
+{
+    Config& config = ConfigManager::Instance();
+
+    
+    if (!config.fovEnabled)
+        return;
+
+    // Get the ImGui draw list
+    ImDrawList* drawList = ImGui::GetBackgroundDrawList();
+
+    // Get the screen size and calculate the center
+    ImVec2 screenSize = ImGui::GetIO().DisplaySize;
+    ImVec2 screenCenter = ImVec2(screenSize.x / 2.0f, screenSize.y / 2.0f);
+
+    
+    float radius = static_cast<float>(config.fovAimbotSize);
+
+    // Set the circle color
+    ImU32 circleColor = IM_COL32(255, 255, 0, 255); // Yellow
+
+    // Draw the FOV circle
+    drawList->AddCircle(
+        screenCenter,   // Center of the circle
+        radius,         // Radius of the circle
+        circleColor,    // Color of the circle
+        128,             // Smoothness (number of segments)
+        1.0f            // Thickness
+    );
+}
+
+
 
 // Draw the ESP (Entity Specific) for each entity
 void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {

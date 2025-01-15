@@ -7,7 +7,7 @@ namespace aim {
     void aimbot(runTimeInfo::pInfo& pInfo) {
         Config& config = ConfigManager::Instance();
 
-        if (config.aimbotEnabled == false) {
+        if (!config.aimbotEnabled) {
             return;
         }
 
@@ -43,6 +43,11 @@ namespace aim {
             float deltaX = screen.x - screenCenterX;
             float deltaY = screen.y - screenCenterY;
             float distance = sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            // Check if the entity is within the FOV
+            if (config.fovEnabled && distance > static_cast<float>(config.fovAimbotSize)) {
+                continue; // Skip targets outside the FOV
+            }
 
             // Update the closest target if this one is closer
             if (distance < closestDistance) {
@@ -80,4 +85,6 @@ namespace aim {
         }
     }
 
-} // namespace aim
+}
+
+ // namespace aim
