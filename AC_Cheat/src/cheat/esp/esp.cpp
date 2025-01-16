@@ -1,6 +1,8 @@
 #include "esp.h"
 #include "../overlay/overlay.h"
 #include "../config.h"
+#include "../../imgui/imgui_internal.h"
+#include <cstdlib>
 
 // Constructor and Destructor
 Visuals::Visuals() {}
@@ -12,66 +14,114 @@ void Visuals::RenderMenu() {
     Overlay& overlay = Overlay::Instance();
     Config& config = ConfigManager::Instance();
 
+    static float menuAlpha = 0.0f;
+    static bool isMenuOpen = false;
+
     if (overlay.drawMenu) {
+        if (!isMenuOpen) {
+            isMenuOpen = true;
+            menuAlpha = 0.0f;
+        }
+
+        // Smooth fade in
+        menuAlpha += ImGui::GetIO().DeltaTime * 4.0f;
+        if (menuAlpha > 1.0f) menuAlpha = 1.0f;
+
         ImGuiStyle& style = ImGui::GetStyle();
 
-        // Customize ImGui window styles
-        style.WindowRounding = 12.0f;
-        style.FrameRounding = 6.0f;
-        style.Colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.05f, 0.05f, 0.9f);
-        style.Colors[ImGuiCol_TitleBg] = ImVec4(0.15f, 0.2f, 0.35f, 1.0f);
-        style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.2f, 0.25f, 0.4f, 1.0f);
-        style.Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.25f, 0.45f, 1.0f);
-        style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.3f, 0.35f, 0.55f, 1.0f);
-        style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.4f, 0.5f, 0.7f, 1.0f);
-        style.Colors[ImGuiCol_CheckMark] = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
-        style.Colors[ImGuiCol_Separator] = ImVec4(0.2f, 0.3f, 0.4f, 1.0f);
+        // Enhanced styling
+        style.WindowRounding = 8.0f;
+        style.FrameRounding = 4.0f;
+        style.ScrollbarRounding = 4.0f;
+        style.GrabRounding = 4.0f;
 
-        // Set up the cheat menu window
-        ImGui::SetNextWindowPos(ImVec2(15.0f, 350.0f), ImGuiCond_Always);
-        ImGui::SetNextWindowSize(ImVec2(500.0f, 350.0f), ImGuiCond_Always);
-        ImGui::Begin("AssaultCube Cheat Menu", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+        // Static accent colors
+        ImVec4 accent = ImVec4(0.2f, 0.4f, 0.8f, menuAlpha);
+        ImVec4 accentDark = ImVec4(0.1f, 0.2f, 0.4f, menuAlpha);
 
-        // Menu title and separator
-        ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "AssaultCube Cheat Menu");
+        // Apply modern color scheme
+        style.Colors[ImGuiCol_WindowBg] = ImVec4(0.07f, 0.07f, 0.09f, 0.94f * menuAlpha);
+        style.Colors[ImGuiCol_Border] = ImVec4(0.12f, 0.12f, 0.16f, 0.6f * menuAlpha);
+        style.Colors[ImGuiCol_Button] = accent;
+        style.Colors[ImGuiCol_ButtonActive] = accentDark;
+        style.Colors[ImGuiCol_CheckMark] = ImVec4(0.4f, 0.6f, 1.0f, menuAlpha);
+
+        ImVec2 screenSize = ImGui::GetIO().DisplaySize;
+        ImVec2 menuSize = ImVec2(400.0f, 300.0f);
+        ImVec2 menuPos = ImVec2(
+            (screenSize.x - menuSize.x) * 0.5f,
+            (screenSize.y - menuSize.y) * 0.5f
+        );
+
+        // Window setup
+        ImGui::SetNextWindowPos(menuPos, ImGuiCond_Always);
+        ImGui::SetNextWindowSize(menuSize, ImGuiCond_Always);
+
+        ImGui::Begin("AssaultCube Cheat Menu", nullptr,
+            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
+
+        // Draw static gradient header
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        ImVec2 windowPos = ImGui::GetWindowPos();
+        ImVec2 windowSize = ImGui::GetWindowSize();
+
+        ImVec4 gradColor1 = ImVec4(0.12f, 0.15f, 0.24f, 0.94f);
+        ImVec4 gradColor2 = ImVec4(0.18f, 0.22f, 0.36f, 0.94f);
+
+        drawList->AddRectFilledMultiColor(
+            windowPos,
+            ImVec2(windowPos.x + windowSize.x, windowPos.y + 50.0f),
+            ImColor(gradColor1),
+            ImColor(gradColor2),
+            ImColor(gradColor2),
+            ImColor(gradColor1)
+        );
+
+        // Static title
+        ImGui::SetCursorPos(ImVec2(15.0f, 15.0f));
+        ImGui::Text("AssaultCube Cheat Menu");
+
+        // Main content
+        ImGui::BeginChild("MainContent", ImVec2(0, -40), false);
+
+        ImGui::TextColored(ImVec4(0.3f, 0.5f, 0.9f, menuAlpha), "? Features");
         ImGui::Separator();
-
-        // Features Section
         ImGui::Spacing();
-        ImGui::Text("\u25BA Features");
-        ImGui::Separator();
-        ImGui::Spacing();
-
-      
 
         ImGui::Checkbox("Enable ESP", &config.espEnabled);
         ImGui::Checkbox("Enable Aimbot", &config.aimbotEnabled);
-		ImGui::Checkbox("Enable FOV", &config.fovEnabled);
+        ImGui::Checkbox("Enable FOV", &config.fovEnabled);
+
         if (config.fovEnabled) {
+            ImGui::PushItemWidth(200.0f);
             ImGui::SliderInt("FOV Size", &config.fovAimbotSize, 25, 800);
+            ImGui::PopItemWidth();
         }
-        // Settings Section
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
-        ImGui::Text("\u25BA Settings");
-        ImGui::Separator();
-        ImGui::Spacing();
 
-       
+        ImGui::EndChild();
 
-        static int espColor = 0;
-        const char* espModes[] = { "Red", "Green", "Blue" };
-        ImGui::Combo("ESP Color", &espColor, espModes, IM_ARRAYSIZE(espModes));
+        // Static footer
+        drawList->AddRectFilledMultiColor(
+            ImVec2(windowPos.x, windowPos.y + windowSize.y - 40.0f),
+            ImVec2(windowPos.x + windowSize.x, windowPos.y + windowSize.y),
+            ImColor(gradColor1),
+            ImColor(gradColor2),
+            ImColor(gradColor2),
+            ImColor(gradColor1)
+        );
 
-        // Footer Section
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "[press X to close the cheat");
+        ImGui::SetCursorPos(ImVec2(15.0f, windowSize.y - 30.0f));
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, menuAlpha), "[press X to close]");
 
         ImGui::End();
     }
+    else {
+        isMenuOpen = false;
+    }
 }
+
+
+
 void Visuals::drawFov()
 {
     Config& config = ConfigManager::Instance();

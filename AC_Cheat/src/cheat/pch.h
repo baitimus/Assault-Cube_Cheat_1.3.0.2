@@ -12,3 +12,4 @@
 #include <d3d11.h>
 #include <mutex>
 #include <sstream>
+#include <algorithm> 
