@@ -1,11 +1,18 @@
 #include "winapi.h"
 #include "overlay/overlay.h"
-
+#include "config.h"
 
 void runTimeInfo::SetUp(runTimeInfo::pInfo& pInfo) {
     Offsets offsets;
+	Config& config = ConfigManager::Instance();
+
 
     while (true) {
+        if (!config.cheatRunning)
+        {
+
+            return;
+        }
         HWND hgamewindow = FindWindow(NULL, _T("AssaultCube"));
         if (hgamewindow == NULL) {
             

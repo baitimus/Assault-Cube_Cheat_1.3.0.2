@@ -53,20 +53,32 @@ public:
     }
 
     static void DrawPoints(ImDrawList* drawList) {
-		Config& config = ConfigManager::Instance();
-        if (config.animationEnabled) {
+        Config& config = ConfigManager::Instance();
 
+        if (config.animationEnabled) {
+            // Use animation color
+            ImVec4 baseColor = config.animationColor;
+
+            // Convert ImVec4 to ImU32 colors
+            ImU32 lineColor = ImGui::ColorConvertFloat4ToU32(ImVec4(baseColor.x * 0.8f, baseColor.y * 0.8f, baseColor.z, 0.3f));
+            ImU32 circleColor = ImGui::ColorConvertFloat4ToU32(baseColor);
+
+            // Set the desired line thickness
+            const float lineThickness = 1.25f; // Adjust this value to make the lines thicker
 
             for (size_t i = 0; i < points.size(); ++i) {
                 std::vector<size_t> closestPoints;
+
                 for (size_t j = 0; j < points.size(); ++j) {
                     if (i == j) continue;
+
                     if (closestPoints.size() < 4) {
                         closestPoints.push_back(j);
                     }
                     else {
                         float maxDist = 0.0f;
                         size_t maxIndex = 0;
+
                         for (size_t k = 0; k < closestPoints.size(); ++k) {
                             float dist = std::pow(points[i].x - points[closestPoints[k]].x, 2) +
                                 std::pow(points[i].y - points[closestPoints[k]].y, 2);
@@ -84,16 +96,26 @@ public:
                     }
                 }
 
+                // Draw lines to closest points
                 for (size_t j : closestPoints) {
-                    drawList->AddLine(ImVec2(points[i].x, points[i].y), ImVec2(points[j].x, points[j].y), ImColor(0.5f, 0.5f, 0.9f, 0.3f));
+                    drawList->AddLine(
+                        ImVec2(points[i].x, points[i].y),
+                        ImVec2(points[j].x, points[j].y),
+                        lineColor,
+                        lineThickness // Specify line thickness here
+                    );
                 }
             }
 
+            // Draw filled circles at points
             for (const auto& p : points) {
-                drawList->AddCircleFilled(ImVec2(p.x, p.y), 3.0f, ImColor(0.8f, 0.8f, 1.0f, 0.7f));
+                drawList->AddCircleFilled(ImVec2(p.x, p.y), 3.0f, circleColor);
             }
         }
     }
+
+
+
 };
 std::vector<Point> GeometricalShapes::points;
 void Visuals::RenderMenu() {
@@ -127,11 +149,13 @@ void Visuals::RenderMenu() {
         style.ScrollbarRounding = 4.0f;
         style.GrabRounding = 4.0f;
 
-        style.Colors[ImGuiCol_WindowBg] = ImVec4(0.07f, 0.07f, 0.09f, 0.94f * menuAlpha);
-        style.Colors[ImGuiCol_Border] = ImVec4(0.12f, 0.12f, 0.16f, 0.6f * menuAlpha);
-        style.Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.4f, 0.8f, menuAlpha);
-        style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.1f, 0.2f, 0.4f, menuAlpha);
-        style.Colors[ImGuiCol_CheckMark] = ImVec4(0.4f, 0.6f, 1.0f, menuAlpha);
+        // Apply the menu color
+        ImVec4 menuColor = config.menuColor;
+        style.Colors[ImGuiCol_WindowBg] = ImVec4(menuColor.x, menuColor.y, menuColor.z, 0.94f * menuAlpha);
+        style.Colors[ImGuiCol_Border] = ImVec4(menuColor.x * 0.8f, menuColor.y * 0.8f, menuColor.z * 0.8f, 0.6f * menuAlpha);
+        style.Colors[ImGuiCol_Button] = ImVec4(menuColor.x * 1.2f, menuColor.y * 1.2f, menuColor.z * 1.2f, menuAlpha);
+        style.Colors[ImGuiCol_ButtonActive] = ImVec4(menuColor.x * 0.9f, menuColor.y * 0.9f, menuColor.z * 0.9f, menuAlpha);
+        style.Colors[ImGuiCol_CheckMark] = ImVec4(menuColor.x * 1.5f, menuColor.y * 1.5f, menuColor.z * 1.5f, menuAlpha);
 
         ImVec2 menuSize = ImVec2(400.0f, 300.0f);
         ImVec2 menuPos = ImVec2(
@@ -145,72 +169,52 @@ void Visuals::RenderMenu() {
         ImGui::Begin("AssaultCube Cheat Menu", nullptr,
             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar);
 
-        ImDrawList* drawList = ImGui::GetWindowDrawList();
-        ImVec2 windowPos = ImGui::GetWindowPos();
-        ImVec2 windowSize = ImVec2(menuSize.x, menuSize.y);
-
-        ImVec4 gradColor1 = ImVec4(0.12f, 0.15f, 0.24f, 0.94f);
-        ImVec4 gradColor2 = ImVec4(0.18f, 0.22f, 0.36f, 0.94f);
-
-        drawList->AddRectFilledMultiColor(
-            windowPos,
-            ImVec2(windowPos.x + windowSize.x, windowPos.y + 50.0f),
-            ImColor(gradColor1),
-            ImColor(gradColor2),
-            ImColor(gradColor2),
-            ImColor(gradColor1)
-        );
-
         ImGui::SetCursorPos(ImVec2(15.0f, 15.0f));
         ImGui::Text("AssaultCube Cheat Menu");
 
         ImGui::BeginChild("MainContent", ImVec2(0, -40), false);
 
-        ImGui::TextColored(ImVec4(0.5f, 0.7f, 1.0f, menuAlpha), "► Features");
-        ImGui::Separator();
-        ImGui::Spacing();
-
+        // Feature settings
         ImGui::Checkbox("Enable ESP", &config.espEnabled);
         ImGui::Checkbox("Enable Aimbot", &config.aimbotEnabled);
         ImGui::Checkbox("Enable FOV", &config.fovEnabled);
 
         if (config.fovEnabled) {
-            ImGui::PushItemWidth(200.0f);
             ImGui::SliderInt("FOV Size", &config.fovAimbotSize, 25, 800);
-            ImGui::PopItemWidth();
         }
-        ImGui::Separator();
-        ImGui::Text("Press P to Teleport to nearest enemy");
-		ImGui::Spacing();
-		ImGui::Checkbox("Enable Animation", &config.animationEnabled);
-        
+
+        // Animation settings
+        ImGui::Checkbox("Enable Animation", &config.animationEnabled);
+
         if (config.animationEnabled) {
-            ImGui::PushItemWidth(200.0f);
             ImGui::SliderFloat("Animation Speed", &config.animationSpeed, 0.1f, 1.5f);
-            
         }
+
+        // Dropdown for color selection
+        static int selectedColorTarget = 0; // 0 = Menu Color, 1 = Animation Color
+        const char* colorTargets[] = { "Menu Color", "Animation Color" };
+
+        ImGui::Separator();
+        ImGui::Text("Customize Colors:");
+        ImGui::Combo("Select Target", &selectedColorTarget, colorTargets, IM_ARRAYSIZE(colorTargets));
+
+        // Display color picker based on the selected target
+        if (selectedColorTarget == 0) {
+            ImGui::ColorEdit4("Menu Color", (float*)&config.menuColor, ImGuiColorEditFlags_NoInputs);
+        }
+        else if (selectedColorTarget == 1) {
+            ImGui::ColorEdit4("Animation Color", (float*)&config.animationColor, ImGuiColorEditFlags_NoInputs);
+        }
+
         ImGui::EndChild();
-        ImVec4 footerColor1 = ImVec4(0.12f, 0.15f, 0.24f, 0.94f);
-        ImVec4 footerColor2 = ImVec4(0.18f, 0.22f, 0.36f, 0.94f);
-
-        drawList->AddRectFilledMultiColor(
-            ImVec2(windowPos.x, windowPos.y + windowSize.y - 40.0f),
-            ImVec2(windowPos.x + windowSize.x, windowPos.y + windowSize.y),
-            ImColor(footerColor1),
-            ImColor(footerColor2),
-            ImColor(footerColor2),
-            ImColor(footerColor1)
-        );
-
-        ImGui::SetCursorPos(ImVec2(15.0f, windowSize.y - 30.0f));
-        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, menuAlpha), "[press X to close]");
-
         ImGui::End();
     }
     else {
         isMenuOpen = false;
     }
 }
+
+
 void Visuals::drawFov()
 {
     Config& config = ConfigManager::Instance();

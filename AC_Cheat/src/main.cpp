@@ -84,15 +84,16 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
     std::thread miscThreadInstance(miscThread, std::ref(pInfo));
     std::thread overlayThreadInstance(overlayThread, instance, std::ref(pInfo));
 
-
+    
     while (config.cheatRunning)
     {
         if (GetAsyncKeyState('X') & 0x8000) { // Check if X is pressed
             config.cheatRunning = false;
-            break; // Exit the loop
+
+          break; // Exit the loop
         }
 
-        if (GetAsyncKeyState('P') & 0x8000) { 
+       if (GetAsyncKeyState('P') & 0x8000) { 
             
 			misc::teleportToNearestPlayer(pInfo);
         }

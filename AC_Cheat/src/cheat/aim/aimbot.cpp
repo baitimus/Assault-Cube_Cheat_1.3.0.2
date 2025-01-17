@@ -29,6 +29,9 @@ namespace aim {
         entity* closestTarget = nullptr;
 
         //entity loop
+        if (entities.empty()) {
+            return;
+        }
         for (auto& entity : entities) {
             if (entity.entHealth <= 0 || entity.teamId == localPlayer.teamId) {
                 continue;  // Skip dead enemies or teammates

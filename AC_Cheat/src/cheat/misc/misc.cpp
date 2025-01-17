@@ -17,7 +17,7 @@ void misc::teleportToNearestPlayer(runTimeInfo::pInfo& pInfo) {
     for (auto& entity : entities) {
        
         
-
+            
         // Calculate the distance between the local player and the current entity
         float distance = std::sqrt(
             std::pow(entity.headX - localPlayer.headX, 2) +
