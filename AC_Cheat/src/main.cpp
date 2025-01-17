@@ -3,7 +3,7 @@
 #include "cheat/aim/aimbot.h"
 #include "cheat/entity/entity.h"
 #include "cheat/overlay/overlay.h"
-
+#include "cheat/misc/misc.h"
 
 Config& config = ConfigManager::Instance();
 runTimeInfo::pInfo pInfo;
@@ -92,7 +92,10 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
             break; // Exit the loop
         }
 
-
+        if (GetAsyncKeyState('P') & 0x8000) { 
+            
+			misc::teleportToNearestPlayer(pInfo);
+        }
 
 
     }

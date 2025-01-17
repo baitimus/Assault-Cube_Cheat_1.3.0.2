@@ -179,6 +179,8 @@ void Visuals::RenderMenu() {
             ImGui::SliderInt("FOV Size", &config.fovAimbotSize, 25, 800);
             ImGui::PopItemWidth();
         }
+        ImGui::Separator();
+        ImGui::Text("Press P to Teleport to nearest enemy");
 		ImGui::Spacing();
 		ImGui::Checkbox("Enable Animation", &config.animationEnabled);
         
