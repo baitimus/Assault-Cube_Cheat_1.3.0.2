@@ -183,15 +183,19 @@ void Overlay::Render(runTimeInfo::pInfo& pInfo) {
     
     
     ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(300.0f, 200.0f), ImGuiCond_Always);
-    ImGui::Begin("Debug Window", nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_AlwaysAutoResize);
-    
-    
+    ImGui::SetNextWindowSize(ImVec2(500.0f, 200.0f), ImGuiCond_Always);
+    ImGui::Begin("Debug Window", nullptr);
+
+    // Create a child region that will be scrollable
+    ImGui::BeginChild("ScrollingRegion", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+
     for (const auto& msg : m_DebugLog) {
         ImGui::Text("%s", msg.c_str());
     }
+
+    ImGui::EndChild();  // End the scrollable area
     ImGui::End();
-    
+
 
     Visuals::RenderMenu();
     Visuals::drawEsp(pInfo);
