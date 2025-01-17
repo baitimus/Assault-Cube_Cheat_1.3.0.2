@@ -9,6 +9,8 @@ struct Config {
     bool cheatRunning = true;
 	bool fovEnabled = true;
     int fovAimbotSize = 25;
+	bool animationEnabled = true;
+	float animationSpeed = 1.0f;
 
 };
 

@@ -39,50 +39,59 @@ public:
     }
 
     static void UpdatePoints(float width, float height) {
-        for (auto& p : points) {
-            p.x += p.dx;
-            p.y += p.dy;
+        Config& config = ConfigManager::Instance();
+        if (config.animationEnabled)
+        {
+            for (auto& p : points) {
+                p.x += p.dx * config.animationSpeed;
+                p.y += p.dy * config.animationSpeed;
 
-            if (p.x < 0 || p.x > width) p.dx = -p.dx;
-            if (p.y < 0 || p.y > height) p.dy = -p.dy;
+                if (p.x < 0 || p.x > width) p.dx = -p.dx;
+                if (p.y < 0 || p.y > height) p.dy = -p.dy;
+            }
         }
     }
 
     static void DrawPoints(ImDrawList* drawList) {
-        for (size_t i = 0; i < points.size(); ++i) {
-            std::vector<size_t> closestPoints;
-            for (size_t j = 0; j < points.size(); ++j) {
-                if (i == j) continue;
-                if (closestPoints.size() < 4) {
-                    closestPoints.push_back(j);
-                }
-                else {
-                    float maxDist = 0.0f;
-                    size_t maxIndex = 0;
-                    for (size_t k = 0; k < closestPoints.size(); ++k) {
-                        float dist = std::pow(points[i].x - points[closestPoints[k]].x, 2) +
-                            std::pow(points[i].y - points[closestPoints[k]].y, 2);
-                        if (dist > maxDist) {
-                            maxDist = dist;
-                            maxIndex = k;
+		Config& config = ConfigManager::Instance();
+        if (config.animationEnabled) {
+
+
+            for (size_t i = 0; i < points.size(); ++i) {
+                std::vector<size_t> closestPoints;
+                for (size_t j = 0; j < points.size(); ++j) {
+                    if (i == j) continue;
+                    if (closestPoints.size() < 4) {
+                        closestPoints.push_back(j);
+                    }
+                    else {
+                        float maxDist = 0.0f;
+                        size_t maxIndex = 0;
+                        for (size_t k = 0; k < closestPoints.size(); ++k) {
+                            float dist = std::pow(points[i].x - points[closestPoints[k]].x, 2) +
+                                std::pow(points[i].y - points[closestPoints[k]].y, 2);
+                            if (dist > maxDist) {
+                                maxDist = dist;
+                                maxIndex = k;
+                            }
+                        }
+
+                        float distToJ = std::pow(points[i].x - points[j].x, 2) +
+                            std::pow(points[i].y - points[j].y, 2);
+                        if (distToJ < maxDist) {
+                            closestPoints[maxIndex] = j;
                         }
                     }
+                }
 
-                    float distToJ = std::pow(points[i].x - points[j].x, 2) +
-                        std::pow(points[i].y - points[j].y, 2);
-                    if (distToJ < maxDist) {
-                        closestPoints[maxIndex] = j;
-                    }
+                for (size_t j : closestPoints) {
+                    drawList->AddLine(ImVec2(points[i].x, points[i].y), ImVec2(points[j].x, points[j].y), ImColor(0.5f, 0.5f, 0.9f, 0.3f));
                 }
             }
 
-            for (size_t j : closestPoints) {
-                drawList->AddLine(ImVec2(points[i].x, points[i].y), ImVec2(points[j].x, points[j].y), ImColor(0.5f, 0.5f, 0.9f, 0.3f));
+            for (const auto& p : points) {
+                drawList->AddCircleFilled(ImVec2(p.x, p.y), 3.0f, ImColor(0.8f, 0.8f, 1.0f, 0.7f));
             }
-        }
-
-        for (const auto& p : points) {
-            drawList->AddCircleFilled(ImVec2(p.x, p.y), 3.0f, ImColor(0.8f, 0.8f, 1.0f, 0.7f));
         }
     }
 };
@@ -170,9 +179,15 @@ void Visuals::RenderMenu() {
             ImGui::SliderInt("FOV Size", &config.fovAimbotSize, 25, 800);
             ImGui::PopItemWidth();
         }
-
+		ImGui::Spacing();
+		ImGui::Checkbox("Enable Animation", &config.animationEnabled);
+        
+        if (config.animationEnabled) {
+            ImGui::PushItemWidth(200.0f);
+            ImGui::SliderFloat("Animation Speed", &config.animationSpeed, 0.1f, 1.5f);
+            
+        }
         ImGui::EndChild();
-
         ImVec4 footerColor1 = ImVec4(0.12f, 0.15f, 0.24f, 0.94f);
         ImVec4 footerColor2 = ImVec4(0.18f, 0.22f, 0.36f, 0.94f);
 
@@ -305,7 +320,7 @@ void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
             }
             else {
                 if (entity.teamId == localPlayer.teamId) {
-                    // Green for teammates
+                    // Green for teammatexs
                     ImGui::GetBackgroundDrawList()->AddRect(
                         ImVec2(screen.x - w / 2, screen.y - headOffset),
                         ImVec2(screen.x + w / 2, screen.y + h - headOffset),
