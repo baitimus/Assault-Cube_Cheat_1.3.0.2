@@ -14,5 +14,4 @@
 #include <sstream>
 #include <algorithm>
 #include <cstdlib>
-
 #include <cmath>

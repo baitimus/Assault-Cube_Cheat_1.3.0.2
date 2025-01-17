@@ -15,7 +15,7 @@ struct Config {
 class ConfigManager {
 public:
     static Config& Instance() {
-        static Config instance; // Create a static instance
+        static Config instance; 
         return instance;
     }
 

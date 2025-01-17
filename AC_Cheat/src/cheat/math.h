@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entity/entity.h" // Assuming the entity class is in entity.h
+#include "entity/entity.h" 
 
 namespace myMath {
     // Structures for vectors and angles
@@ -23,6 +23,6 @@ namespace myMath {
         float yaw;
     };
 
-    // Function declarations
+    
     bool WorldToScreen(const entity& ent, Vec2* screen, float matrix[16], int windowWidth, int windowHeight);
 }

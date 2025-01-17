@@ -6,28 +6,29 @@ namespace aim {
 
     void aimbot(runTimeInfo::pInfo& pInfo) {
         Config& config = ConfigManager::Instance();
-
-        if (!config.aimbotEnabled) {
-            return;
-        }
-
         Offsets offsets;
         entity ent;
         entity localPlayer;
         myMath::Vec2 screen;
 
-        // Read local player data
+        if (!config.aimbotEnabled) {
+            return;
+        }
+
+  
+
+       
         ent.readLocalplayer(pInfo, localPlayer);
 
         std::vector<entity> entities = ent.readEntityList(pInfo);
 
-        // Variables to track the closest enemy to the center of the screen
+        
         float screenCenterX = pInfo.windowWidth / 2;
         float screenCenterY = pInfo.windowHeight / 2;
         float closestDistance = FLT_MAX;
         entity* closestTarget = nullptr;
 
-        // Loop through entities and get their position on the screen
+        //entity loop
         for (auto& entity : entities) {
             if (entity.entHealth <= 0 || entity.teamId == localPlayer.teamId) {
                 continue;  // Skip dead enemies or teammates

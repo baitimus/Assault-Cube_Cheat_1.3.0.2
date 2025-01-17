@@ -1,34 +1,39 @@
-// Core includes
+//Core includes
 #include "cheat/winapi.h"
 #include "cheat/aim/aimbot.h"
 #include "cheat/entity/entity.h"
 #include "cheat/overlay/overlay.h"
 
 
+Config& config = ConfigManager::Instance();
+runTimeInfo::pInfo pInfo;
+entity ent;
+HANDLE pHandle;
+
 void HandleMenuToggle(Overlay& overlay, std::chrono::steady_clock::time_point& lastToggleTime, const std::chrono::milliseconds& cooldownTime) {
    
 	
-    if (GetAsyncKeyState(VK_INSERT) & 0x8000) {  // Check if the INSERT key is pressed
+    if (GetAsyncKeyState(VK_INSERT) & 0x8000) {  
         auto currentTime = std::chrono::steady_clock::now();
-        if (currentTime - lastToggleTime >= cooldownTime) {  // Check if cooldown has passed
-            overlay.drawMenu = !overlay.drawMenu;  // Toggle menu visibility
-            lastToggleTime = currentTime;  // Update the last toggle time
-            overlay.ToggleInput();  // Toggle input for the overlay
+        if (currentTime - lastToggleTime >= cooldownTime) { 
+            overlay.drawMenu = !overlay.drawMenu;  
+            lastToggleTime = currentTime;  
+            overlay.ToggleInput();  
 
 
 
 			Sleep(25);
-            // Simulate a right-click
+           
             INPUT inputs[2] = {};
-            // Right mouse button downx
+           
             inputs[0].type = INPUT_MOUSE;
             inputs[0].mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
 
-            // Right mouse button up
+           
             inputs[1].type = INPUT_MOUSE;
             inputs[1].mi.dwFlags = MOUSEEVENTF_RIGHTUP;
 
-            // Send the input events
+          
             SendInput(2, inputs, sizeof(INPUT));
 
             // Optional debug messages
@@ -39,13 +44,6 @@ void HandleMenuToggle(Overlay& overlay, std::chrono::steady_clock::time_point& l
         }
     }
 }
-Config& config = ConfigManager::Instance();
-
-// Global state
-runTimeInfo::pInfo pInfo;
-entity ent;
-HANDLE pHandle;
-
 void aimbotThread(runTimeInfo::pInfo& pInfo) {
     runTimeInfo::SetUp(pInfo);
     Overlay& overlay = Overlay::Instance();
@@ -57,21 +55,17 @@ void aimbotThread(runTimeInfo::pInfo& pInfo) {
         }
     }
 }
-
-
-
 void miscThread(runTimeInfo::pInfo& pInfo) {
     Overlay& overlay = Overlay::Instance();
     auto lastToggleTime = std::chrono::steady_clock::now();
-    const std::chrono::milliseconds cooldownTime(100);  // 100 ms cooldown
+    const std::chrono::milliseconds cooldownTime(100);  
 
     while (config.cheatRunning) {
-        HandleMenuToggle(overlay, lastToggleTime, cooldownTime);  // Handle the menu toggle with cooldown
+        HandleMenuToggle(overlay, lastToggleTime, cooldownTime); 
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));  // Sleep for a short time to reduce CPU usage
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));  
     }
 }
-
 void overlayThread(HINSTANCE instance, runTimeInfo::pInfo& pInfo) {
     Overlay& overlay = Overlay::Instance();
 
@@ -82,7 +76,6 @@ void overlayThread(HINSTANCE instance, runTimeInfo::pInfo& pInfo) {
     overlay.AddDebugMessage("Overlay initialized successfully.");
     overlay.Run(pInfo);
 }
-
 INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show) {
     Overlay::Instance().AddDebugMessage("Starting application...");
 

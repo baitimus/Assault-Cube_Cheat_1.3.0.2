@@ -11,20 +11,9 @@ namespace runTimeInfo
 		int windowWidth;
 		int windowHeight;
 		HANDLE pHandle;
-
-
-
 	};
-
 
 	void SetUp(runTimeInfo::pInfo& pInfo);
 	DWORD GetModuleBaseAddress(const wchar_t* lpszModuleName, DWORD procId);
-	
-
-
-	
-
-
-
 }
 

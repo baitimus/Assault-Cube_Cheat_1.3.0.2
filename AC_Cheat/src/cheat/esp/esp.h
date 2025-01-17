@@ -1,5 +1,5 @@
 #pragma once
-#pragma once
+
 
 #include "../entity/entity.h"
 #include "../winapi.h"
@@ -17,8 +17,7 @@ public:
    static void drawEsp(runTimeInfo::pInfo& pInfo);
    static void RenderMenu();
    static void drawFov();
-private:
-    
+     
     
    
 };
