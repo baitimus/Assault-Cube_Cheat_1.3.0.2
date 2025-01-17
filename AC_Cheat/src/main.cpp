@@ -3,22 +3,11 @@
 #include "cheat/aim/aimbot.h"
 #include "cheat/entity/entity.h"
 #include "cheat/overlay/overlay.h"
-const char* random_string() {
-    const char* strings[] = {
-        "apple", "banana", "cherry", "date",
-        "elderberry", "fig", "grape", "honeydew",
-        "kiwi", "lemon", "mango", "nectarine",
-        "orange", "papaya", "quince", "raspberry",
-        "strawberry", "tangerine", "ugli", "vanilla",
-        "watermelon", "xigua", "yellowfruit", "zucchini"
-    };
-    return strings[rand() % 24];
-}
 
 
 void HandleMenuToggle(Overlay& overlay, std::chrono::steady_clock::time_point& lastToggleTime, const std::chrono::milliseconds& cooldownTime) {
    
-	random_string();
+	
     if (GetAsyncKeyState(VK_INSERT) & 0x8000) {  // Check if the INSERT key is pressed
         auto currentTime = std::chrono::steady_clock::now();
         if (currentTime - lastToggleTime >= cooldownTime) {  // Check if cooldown has passed
@@ -31,7 +20,7 @@ void HandleMenuToggle(Overlay& overlay, std::chrono::steady_clock::time_point& l
 			Sleep(25);
             // Simulate a right-click
             INPUT inputs[2] = {};
-            // Right mouse button down
+            // Right mouse button downx
             inputs[0].type = INPUT_MOUSE;
             inputs[0].mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
 
@@ -62,7 +51,7 @@ void aimbotThread(runTimeInfo::pInfo& pInfo) {
     Overlay& overlay = Overlay::Instance();
 
     while (config.cheatRunning) {
-        random_string();
+        
         if (GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
             aim::aimbot(pInfo);
         }

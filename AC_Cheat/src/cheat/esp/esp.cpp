@@ -23,7 +23,6 @@ struct Point {
     float x, y;
     float dx, dy;
 };
-
 class GeometricalShapes {
 public:
     static std::vector<Point> points;
@@ -87,7 +86,6 @@ public:
         }
     }
 };
-
 std::vector<Point> GeometricalShapes::points;
 void Visuals::RenderMenu() {
     Overlay& overlay = Overlay::Instance();
@@ -196,11 +194,6 @@ void Visuals::RenderMenu() {
         isMenuOpen = false;
     }
 }
-
-
-
-
-
 void Visuals::drawFov()
 {
     Config& config = ConfigManager::Instance();
@@ -231,10 +224,6 @@ void Visuals::drawFov()
         0.5f            // Thickness
     );
 }
-
-
-
-
 void Visuals::drawEsp(runTimeInfo::pInfo& pInfo) {
 
     Config& config = ConfigManager::Instance();
